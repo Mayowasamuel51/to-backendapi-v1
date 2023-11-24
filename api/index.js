@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 app.use(bodyParser.json()) // application/json
 const cors = require('cors')
 const dotenv = require('dotenv')
+const feed = require('../routes/testapi')
 const dotenvb = require('dotenv').config();
 const Middleware = require('../middleware/auth')
 mongoose.connect(process.env.DATABASE_URL).then((res)=>console.log('database connected!!!')).catch((err)=>console.log(err.message))
@@ -24,7 +25,7 @@ app.get('/api', (req, res) => {
 })
 
 
-// app.use('/api',testapi)
+app.use('/api',feed)
 
 
 /// genral error express

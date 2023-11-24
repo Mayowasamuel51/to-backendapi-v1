@@ -8,7 +8,7 @@ const cors = require('cors')
 const dotenv = require('dotenv')
 const dotenvb = require('dotenv').config();
 const Middleware = require('./middleware/auth')
-mongoose.connect(process.env.DATABASE_URL).then((res)=>console.log('database connected!!!')).catch((err)=>console.log(err.message))
+// mongoose.connect(process.env.DATABASE_URL).then((res)=>console.log('database connected!!!')).catch((err)=>console.log(err.message))
 
 app.use(cors())
 // // connecting the server and frontend

@@ -1,18 +1,13 @@
-const express = require('express');
-const { model } = require('mongoose');
-const Middleware = require('../middleware/auth')
-const router = express.Router();
+// index.js 
+const express = require('express') 
+const app = express() 
+app.get('/api',(req,res)=>{ 
+	res.send(`<h5 style="color:green"> 
+		Hey Geek! you just deployed serverless express api</h5>`) 
+}) 
+app.listen(8080,()=>{ 
+	console.log('Server started at http://localhost:8080') 
+}) 
 
 
-
-router.get('/api', Middleware.decodeToken, (req, res, next) => {
-    console.log(req.headers)
-   return  res.json({
-        post: [{
-            id:1,
-            name:"okay"
-        }]
-    })
-})
-
-module.exports = router;
+module.exports=app

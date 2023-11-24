@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express()
 const mongoose = require('mongoose');
-const testapi = require('./api/testapi')
+const testapi = require('./api/index')
 const bodyParser = require('body-parser')
 app.use(bodyParser.json()) // application/json
 const cors = require('cors')

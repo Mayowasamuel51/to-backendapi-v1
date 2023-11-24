@@ -4,13 +4,13 @@ const app = express()
 // const bodyParser = require('body-parser')
 // app.use(bodyParser.json()) // application/json
 // const { initializeApp } = require('firebase-admin/app');
-// const cors = require('cors')
+const cors = require('cors')
 // const dotenv = require('dotenv')
 // const dotenvb = require('dotenv').config();
-// const Middleware = require('./middleware/auth')
+const Middleware = require('./middleware/auth')
 // mongoose.connect(process.env.DATABASE_URL).then((res)=>console.log('database connected!!!')).catch((err)=>console.log(err.message))
 
-// app.use(cors())
+app.use(cors())
 // // connecting the server and frontend
 // app.use((req, res, next) => {
 //     res.setHeader('Content-Type', 'application/json');
@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
     res.send('okay!!!!!!!!!!!!!!!!!!')
 })
 
-// app.use(Middleware.decodeToken)
+app.use(Middleware.decodeToken)
 
 app.get('/api', (req, res, next) => {
     console.log(req.headers)

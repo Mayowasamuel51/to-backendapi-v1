@@ -19,7 +19,11 @@ app.use((req, res, next) => {
     next()
 })
 
-// app.use(Middleware.decodeToken)
+app.get('/', (req, res) => {
+    res.send('okay!!!!!!!!!!!!!!!!!!')
+})
+
+app.use(Middleware.decodeToken)
 
 app.get('/api', (req, res, next) => {
     console.log(req.headers)

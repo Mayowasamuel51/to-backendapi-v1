@@ -2,7 +2,8 @@ const admin = require('../firebase')
 
 class Middleware {
     async decodeToken(req, res, next) {
-        const token = req.headers.authorization.split(' ')[1];
+
+        const token = req.headers.authorization.split(' ')[1];  // coming from frontend 
         try {
             const decodeValue =  await  admin.auth().verifyIdToken(token);
             console.log(decodeValue)

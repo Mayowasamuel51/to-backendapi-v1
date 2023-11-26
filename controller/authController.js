@@ -5,11 +5,13 @@ const bcrypt = require('bcrypt')
 const signup = (req, res, next) => {
     const error = validationResult(req);
     if (!error.isEmpty()) {
-        const error = new Error("vaildation failed data  user paeg")
+        const error = new Error("vaildation failed data please fill up!!!!!")
         error.statusCode = 422;
         throw error
     }
     const { email, name, password } = req.body;
+    // check if user exist first 
+  
     const token = jwt.sign({ email: email }, 'sfcdhbvdhs vsdvjsvsvvd', {
         expiresIn:'1h'
     })
@@ -26,6 +28,7 @@ const signup = (req, res, next) => {
                 token
             })
             console.log(result)
+            console.log('welcome to To!!!!!!!!!!!!!!!!!!!!!')
         })
     }).catch((err) => {
         if (!err.statusCode) {
@@ -43,10 +46,10 @@ const login = (req, res, next) => {
     // check if user exist 
     // check for token
     const { email, password } = req.body;
-    let loadedUser
+    let loadedUser;
     User.findOne({ email: email }).then((user) => {
         if (!user) {
-            const error = new Error("user or email not found");
+            const error = new Error("Login error: Verify your email and password or create an account");
             error.statusCode = 401;
             throw error;
         }
@@ -54,8 +57,8 @@ const login = (req, res, next) => {
         return bcrypt.compare(password, user.password)
     }).then(isEqaul => {
         if (!isEqaul) {
-            const error = new Error("wonrng password");
-            error.statusCode = 401;
+            const error = new Error("Password unrecognized. Retry or reset your password!!!");
+            error.statusCode = 403;
             throw error;
         }
 

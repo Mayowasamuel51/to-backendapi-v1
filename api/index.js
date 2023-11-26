@@ -13,7 +13,6 @@ const Middleware = require('../middleware/auth')
 mongoose.connect("mongodb+srv://fpasamuelmayowa51:5iX35jgh9yB9P6Im@cluster0.unk3ntp.mongodb.net/datausers")
     .then((res) => console.log('database connected!!!'))
     .catch((err) => console.log(err.message))
-
 app.use(cors())
 // // connecting the server and frontend
 app.use((req, res, next) => {
@@ -37,7 +36,7 @@ app.use((error, req, res, next) => {
     console.log(error.message)
     const status = error.statusCode || 500
     const message = error.message;
-    res.status(status).json({messsage:message})
+    res.status(status).json({message:message, error:"server error"})
 })
 const port = 8000 || process.env.PORT;
 app.listen(port, () => {

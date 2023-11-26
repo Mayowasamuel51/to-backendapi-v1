@@ -6,12 +6,13 @@ const User = require('../model/user')
 
 router.post('/sighup', [
     body('email').isEmail().withMessage('please enter a vilad email').custom((value, { req }) => {
-        return User.findOne({ email: value }).then(userDoc => {
+        return User.findOne({ email: req.email}).then(userDoc => {
             if (userDoc) {
                 return Promise.reject('Email already taken')
             }
         })
     }).normalizeEmail(),
+    
     body('password').trim(),
     body('name').notEmpty().withMessage('please enter a vilad email').custom((value, { req }) => {
         return User.findOne({ name: value }).then(userDoc => {
@@ -20,7 +21,7 @@ router.post('/sighup', [
             }
         })
     })
-],authController.signup );
+], authController.signup);
 
 
 router.post('/login',authController.login)

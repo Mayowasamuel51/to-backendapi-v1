@@ -1,7 +1,11 @@
 const app = require('./api/index')
-const cors = require('cors')
 
-app.use(cors())
+const cors = require("cors");
+
+app.options("*", cors({ origin: 'http://localhost:8000', optionsSuccessStatus: 200 }));
+
+app.use(cors({ origin: "http://localhost:8000", optionsSuccessStatus: 200 }))
+
 // // connecting the server and frontend
 app.use((req, res, next) => {
     res.setHeader('Content-Type', 'application/json');

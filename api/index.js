@@ -6,6 +6,7 @@ app.use(bodyParser.json()) // application/json
 const cors = require('cors')
 const dotenv = require('dotenv')
 const feed = require('../routes/testapi')
+const dashboardroutes = require('../routes/dashboard.js')
 const authroutes = require('../routes/auth.js')
 const course = require('../routes/course')
 const dotenvb = require('dotenv').config();
@@ -27,7 +28,7 @@ app.use((req, res, next) => {
     next()
 })
 
-
+app.use('/api', dashboardroutes)
 app.use('/api', authroutes)
 // app.use('/api', course)
 // app.use('/api',feed)

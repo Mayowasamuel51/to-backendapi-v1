@@ -13,7 +13,7 @@ router.post('/sighup', [
         })
     }).normalizeEmail(),
     
-    body('password').trim(),
+    // body('password').trim(),
     body('name').notEmpty().withMessage('please enter a vilad email').custom((value, { req }) => {
         return User.findOne({ name: value }).then(userDoc => {
             if (userDoc) {

@@ -3,6 +3,13 @@ const router = express.Router();
 const authController = require('../controller/authController')
 const {body} = require('express-validator')
 const User = require('../model/user')
+const Middleware = require('../middleware/is-auth')
+// google token from firebase, and we jwt token from our own server 
+//procted
+router.get('/users', Middleware.mixMiddleware, (req, res) => {
+    res.status(200).json("sdafafafafafaf")
+}    // authController.userInfo)
+)
 
 router.post('/sighup', [
     body('email').isEmail().withMessage('please enter a vilad email').custom((value, { req }) => {
@@ -26,4 +33,4 @@ router.post('/sighup', [
 
 router.post('/login',authController.login)
 
-module.exports = router;
+module.exports = router

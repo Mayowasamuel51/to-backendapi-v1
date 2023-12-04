@@ -21,8 +21,8 @@ const User = new Schema({
         type: String,
         default:'i am new '
     },
-    // posts: [
-    //     { type: Schema.Types.ObjectID, ref: 'Post' },
-    // ]
+    posts: [
+        { type: Schema.Types.ObjectID, ref: 'Payment' },
+    ]
 })
 module.exports = mongoose.model('User', User)

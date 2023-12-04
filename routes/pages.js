@@ -10,9 +10,10 @@ router.post('/contact', [
     body('email').notEmpty(),
     body('message').notEmpty(),
     body('number').notEmpty()
-] , pagesController.contact)
+], pagesController.contact)
 
 
+router.get('/contact', pagesController.getcontact)
 
 
 module.exports = router;

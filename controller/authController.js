@@ -2,30 +2,34 @@ const { validationResult } = require('express-validator')
 const User = require('../model/user.js');
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+const admin = require('../firebase')
 const signup = (req, res, next) => {
     const error = validationResult(req);
     if (!error.isEmpty()) {
-        const error = new Error("vaildation failed data please fill up!!!!!")
+        // const error = new Error("vaildation failed data please fill up!!!!!")
+           const error = new Error("Account already existing!!!!!")
         error.statusCode = 422;
         throw error
     }
     const { email, name, password } = req.body;
     // check if user exist first 
-  
+
     const token = jwt.sign({ email: email }, 'sfcdhbvdhs vsdvjsvsvvd', {
-        expiresIn:'1h'
+        expiresIn: '1h'
     })
+
     bcrypt.hash(password, 12).then(hased => {
         const user = new User({
             name: name,
             email: email,
-            password:hased
+            password: hased
         })
         user.save().then((result) => {
             res.status(201).json({
                 massage: 'user enter',
                 data: result,
-                token
+                token,
+                email:email,
             })
             console.log(result)
             console.log('welcome to To!!!!!!!!!!!!!!!!!!!!!')
@@ -64,15 +68,16 @@ const login = (req, res, next) => {
 
         const token = jwt.sign({ email: loadedUser.email, userId: loadedUser._id.toString() },
             'sfcdhbvdhs vsdvjsvsvvd', {
-            expiresIn:'1h'
+            expiresIn: '1h'
         })
         res.status(200).json({
             message: 'welcome',
             token: token,
-            user:loadedUser
+            email:loadedUser.email,
+            data: loadedUser
         })
-        
-    }). catch((err) => {
+
+    }).catch((err) => {
         if (!err.statusCode) {
             err.statusCode = 500;
         }
@@ -82,7 +87,78 @@ const login = (req, res, next) => {
 }
 
 
+const userInfo = async (req, res, next) => {
+    // this function will return the user login info for both google auth and jwt
+    const token = req.headers.authorization.split(' ')[1]
+    let decodeToken;
+    let decodeValue;
+    try {
+        decodeToken = jwt.verify(token, 'sfcdhbvdhs vsdvjsvsvvd')
+        console.log(decodeToken)
+        return res.status(200).json({
+            token: decodeToken
+        })
+    } catch (err) {
+        try {
+            //firebase auth admin
+            decodeValue = await admin.auth().verifyIdToken(token);
+            console.log(decodeValue)
+            if (decodeValue) {
+               return  res.status(200).json({
+                    token: decodeValue
+                })
+                return next()
+            }
+            return res.json({ message: "un Authorization by users" })
+
+        } catch (err) {
+            console.log("error for admin google", err.message)
+        }
+        err.statusCode = 500;
+        throw err;
+    }
+
+}
+
 module.exports = {
     signup,
-    login
+    login,
+    userInfo
 }
+
+
+
+
+
+    // try {
+    //     // i want the token then the users infomation and display the name or gmail;
+    //     const token = req.headers.authorization.split(' ')[1];
+    //     const googlefirebasetoken = await admin.auth().verifyIdToken(token);
+    //     const jwttoken = jwt.verify(token, 'sfcdhbvdhs vsdvjsvsvvd');
+
+    //     if (googlefirebasetoken.firebase.identities === "google.com") {
+    //         res.status(200).json({
+    //             firebase: googlefirebasetoken
+    //         })
+    //         next()
+    //     }
+    //     else  if(jwttoken){
+
+    //         return res.status(200).json({
+    //             jwt_token: jwttoken,
+    //         })
+    //     }
+
+
+
+
+
+
+
+    // } catch (err) {
+    //     if (!err.statusCode) {
+    //         err.statusCode = 500;
+    //     }
+    //     next(err)
+    //     console.log(err.message)
+    // }

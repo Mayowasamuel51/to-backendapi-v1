@@ -18,6 +18,10 @@ router.get('/mylearning',
 
 
 
+router.post('/order',dashboard.createOrder)
+
+
+
 
 
 module.exports = router;

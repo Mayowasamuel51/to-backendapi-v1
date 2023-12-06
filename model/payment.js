@@ -7,7 +7,13 @@ const Payment = new Schema({
     studentName: {
         type:String
     },
+    payment_mode: {
+        type:String
+    },
     amountPaid:{
+        type:String
+    },
+    payment_id: {
         type:String
     },
     date: {
@@ -15,4 +21,4 @@ const Payment = new Schema({
         default:Date.now()
     }
 })
-module.exports = mongoose.model('Payment',Payment)
+module.exports = mongoose.model('Payment_paypal',Payment)

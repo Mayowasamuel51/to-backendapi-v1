@@ -4,26 +4,31 @@ const Schema = mongoose.Schema
 const contractors = new Schema({
     email: {
         type: String,
-        unqiue:true,
-        required: true
+        // unqiue:true,
+        // required: true
     },
     name: {
         type: String,
-        required: true
+        // required: true
     },
     number: {
         type: String,
-        required: true
+        // required: true
     },
     role_postion: {
         type: String,
-        required: true
+        // required: true
     },
     link_portfolio: {
         type: String,
-        required: true
+        // required: true
+    },
+    pdfurl: {
+        type: String,
+        // required: true
+        // contentType:String
     },
 
 })
 
-module.exports = mongoose.model('contractors',contractors)
+module.exports = mongoose.model('contractors', contractors)

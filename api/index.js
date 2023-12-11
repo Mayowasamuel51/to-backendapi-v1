@@ -10,13 +10,23 @@ const pagesroutes = require('../routes/pages.js')
 const Paypal = require('@paypal/checkout-server-sdk')
 const Middleware = require('../middleware/auth')
 const dotenv = require('dotenv')
+const paypal = require("@paypal/checkout-server-sdk")
 const dotenvb = require('dotenv').config();
 mongoose.connect("mongodb+srv://fpasamuelmayowa51:5iX35jgh9yB9P6Im@cluster0.unk3ntp.mongodb.net/datausers")
   .then((res) => console.log('database connected!!!'))
   .catch((err) => console.log(err.message))
 
 app.use(cors())
-const paypal = require("@paypal/checkout-server-sdk")
+
+
+
+app.use('/api', pagesroutes)
+app.use('/api', dashboardroutes)
+app.use('/api', authroutes)
+
+
+
+
 // const Environment =
 //   process.env.NODE_ENV === "production"
 //     ? paypal.core.LiveEnvironment
@@ -333,11 +343,6 @@ const endpoint_url = environment === 'sandbox' ? 'https://api-m.sandbox.paypal.c
 
 
 
-app.use('/api', pagesroutes)
-app.use('/api', dashboardroutes)
-app.use('/api', authroutes)
-
-
 app.get('/okay', (req, res) => {
   res.json({ ok: "sdsfs" })
 })
@@ -347,14 +352,13 @@ app.get('/okay', (req, res) => {
 /// genral error express
 app.use((error, req, res, next) => {
   console.log(error.message)
-
   const status = error.statusCode || 500
   const message = error.message;
   res.status(status).json({ message: message, error: "server error" })
 })
 
 
-const port = 8000 || process.env.PORT;
+const port = 8000||     process.env.PORT;
 app.listen(port, () => {
   console.log('SERVER IS RUNNING   ' + port)
 })

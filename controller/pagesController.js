@@ -1,4 +1,8 @@
 const Contact = require('../model/contact.js');
+const Contractors = require('../model/contractors.js')
+const Message = require('../model/messages');
+const { validationResult } = require('express-validator')
+
 
 const contact = async (req, res, next) => {
     // const { name, email, number, message } = req.body;
@@ -26,8 +30,6 @@ const contact = async (req, res, next) => {
         console.log(err.message)
     }
 }
-
-
 const getcontact = async (req, res, next) => {
     try {
         const response = await Contact.find();
@@ -44,7 +46,91 @@ const getcontact = async (req, res, next) => {
         console.log(err.message)
     }
 }
+const sendMessage = async (req, res, next) => {
+    const { messages } = req.body;
+
+    try {
+        const message = await Message.create({
+            message: messages
+        })
+        res.status(200).json({
+            messages: message
+        })
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err)
+        console.log(err.message)
+    }
+}
+const getMessage = async (req, res, next) => {
+    try {
+        // get the lastest message from the database !!!!!!
+        const response = await Message.find().sort({ $natural: -1 }).limit(1)
+        res.status(200).json({
+            messages: response
+        })
+
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err)
+        console.log(err.message)
+    }
+}
+
+
+
+const postContractors = async (req, res, next) => {
+    // const error = validationResult(req);
+    // if (!error.isEmpty()) {
+    //     const error = new Error("Account already existing!!!!!")
+    //     error.statusCode = 422;
+    //     throw error
+    // }
+    /// uploading files to the backend     
+    try {
+        const { name, email, role_postion, link_portfolio, number, pdfurl } = req.body;
+        const response = await Contractors.create({
+            name: name,
+            email: email,
+            role_postion: role_postion,
+            link_portfolio: link_portfolio,
+            number: number,
+            pdfurl:pdfurl,
+        })
+        res.status(201).json({
+            response: response,
+            message:"create contractors"
+        })
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err)
+        console.log(err.message)
+    }
+
+}
+
+const getContractors = async  (req,res,next) => {
+    try {
+        const response = await Contractors.find().sort({ $natural: -1 }).limit(30)
+        res.status(200).json({
+            response: response,
+            message:"successfull"
+        })
+    } catch (err) {
+        console.log(err.message)
+    }
+}
 module.exports = {
+    getContractors,
+    postContractors,
     contact,
+    sendMessage,
+    getMessage,
     getcontact
 }

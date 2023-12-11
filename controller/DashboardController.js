@@ -18,7 +18,6 @@ const info = async (req, res, next) => {
     }
 }
 
-
 const createOrder = async (req, res,next) => {
     const { studentName, courseName, payment_mode, payment_id } = req.body;
     try {

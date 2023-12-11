@@ -4,6 +4,7 @@ const authController = require('../controller/authController')
 const {body} = require('express-validator')
 const User = require('../model/user')
 const Middleware = require('../middleware/is-auth')
+
 // google token from firebase, and we jwt token from our own server 
 //procted
 router.get('/users',

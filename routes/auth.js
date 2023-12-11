@@ -31,6 +31,7 @@ router.post('/sighup', [
         })
     })
 ], authController.signup);
-router.post('/login',authController.login)
+router.post('/login', authController.login)
 
+router.post('/google',authController.googleAuth)
 module.exports = router

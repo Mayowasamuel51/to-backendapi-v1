@@ -1,9 +1,8 @@
 const Contact = require('../model/contact.js');
 const Contractors = require('../model/contractors.js')
+const User = require("../model/user.js")
 const Message = require('../model/messages');
 const { validationResult } = require('express-validator')
-
-
 const contact = async (req, res, next) => {
     // const { name, email, number, message } = req.body;
     try {
@@ -80,9 +79,6 @@ const getMessage = async (req, res, next) => {
         console.log(err.message)
     }
 }
-
-
-
 const postContractors = async (req, res, next) => {
     // const error = validationResult(req);
     // if (!error.isEmpty()) {
@@ -114,7 +110,6 @@ const postContractors = async (req, res, next) => {
     }
 
 }
-
 const getContractors = async  (req,res,next) => {
     try {
         const response = await Contractors.find().sort({ $natural: -1 }).limit(30)
@@ -123,10 +118,31 @@ const getContractors = async  (req,res,next) => {
             message:"successfull"
         })
     } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err)
+        console.log(err.message)
+        console.log(err.message)
+    }
+}
+const showStudent = async (req, res, next) => {
+    // showing all stundent  with jwt and google ones
+    try {
+        const response = await User.find().distinct('email')
+        res.status(200).json({
+            response:response
+        })
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err)
         console.log(err.message)
     }
 }
 module.exports = {
+    showStudent,
     getContractors,
     postContractors,
     contact,

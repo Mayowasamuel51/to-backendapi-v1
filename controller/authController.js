@@ -107,10 +107,8 @@ const userInfo = async (req, res, next) => {
                return  res.status(200).json({
                     token: decodeValue
                 })
-                return next()
             }
             return res.json({ message: "un Authorization by users" })
-
         } catch (err) {
             console.log("error for admin google", err.message)
         }
@@ -120,7 +118,29 @@ const userInfo = async (req, res, next) => {
 
 }
 
+const googleAuth = async (req, res, next) => {
+    /// storing only google users
+    try {
+        const { name, email } = req.body;
+        const response = await User.create({
+            name: name,
+            email:email
+        })
+        res.status(201).json({
+            response:response
+        })
+        console.log('well done ')
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err)
+        console.log(err.message)
+    }
+}
+
 module.exports = {
+    googleAuth,
     signup,
     login,
     userInfo

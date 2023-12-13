@@ -3,10 +3,11 @@ const router = express.Router();
 const { body } = require('express-validator')
 const pagesController = require('../controller/pagesController')
 
+// getting total students
+router.get('/total', pagesController.totalStudent)
 
 /// showing all student with jwt and firebase 
 router.get('/show', pagesController.showStudent)
-
 // get all contractors
 router.get('/contractors', pagesController.getContractors)
 /// contractors post 

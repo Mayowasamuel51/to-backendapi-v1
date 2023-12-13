@@ -127,9 +127,11 @@ const getContractors = async  (req,res,next) => {
     }
 }
 const showStudent = async (req, res, next) => {
-    // showing all stundent  with jwt and google ones
+    // showing all student  with jwt and google ones
+    // show name, email  createdAt
     try {
-        const response = await User.find().distinct('email')
+        const response = await User.find().sort({ $natural: -1 }).limit(60)
+            // .distinct('email')
         res.status(200).json({
             response:response
         })
@@ -141,7 +143,24 @@ const showStudent = async (req, res, next) => {
         console.log(err.message)
     }
 }
+const totalStudent = async (req,res,next) => {
+    // getting all students in terms of numbers 
+    try {
+        const response = await User.countDocuments()
+        res.status(200).json({
+            response:response
+        })
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err)
+        console.log(err.message)
+    }
+    
+}
 module.exports = {
+    totalStudent,
     showStudent,
     getContractors,
     postContractors,

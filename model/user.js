@@ -18,6 +18,10 @@ const User = new Schema({
         type: String,
         default:'i am new '
     },
+    date: {
+        type: Date,
+        default:Date.now()
+    },
     posts: [
         { type: Schema.Types.ObjectID, ref: 'Payment' },
     ]

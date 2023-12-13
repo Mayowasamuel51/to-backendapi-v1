@@ -8,6 +8,11 @@ const auth = require('../middleware/is-auth.js')
 const Middleware = require('../middleware/auth')
 
 
+// sending live google meet to paid users  Splunk and Educational   courses  
+router.post('/live',dashboard.sendliveCourses)
+
+
+
 /// middlware for both socal auth and normal auth 
 
 router.get('/mylearning',

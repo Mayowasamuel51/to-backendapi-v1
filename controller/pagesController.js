@@ -130,8 +130,9 @@ const showStudent = async (req, res, next) => {
     // showing all student  with jwt and google ones
     // show name, email  createdAt
     try {
-        const response = await User.find().sort({ $natural: -1 }).limit(60)
-            // .distinct('email')
+        const response = await User.find()
+            // .sort({ $natural: -1 }).limit(60)
+            .distinct('email')
         res.status(200).json({
             response:response
         })

@@ -31,7 +31,18 @@ router.post('/sighup', [
         })
     })
 ], authController.signup);
+
 router.post('/login', authController.login)
 
-router.post('/google',authController.googleAuth)
+router.post('/google', [
+    body('email').isEmail().withMessage('please enter a vilad email').custom((value, { req }) => {
+    return User.findOne({ email: req.email}).then(userDoc => {
+        if (userDoc) {
+            return Promise.reject('Email already taken')
+        }
+    })
+}).normalizeEmail(),
+], authController.googleAuth)
+
+
 module.exports = router

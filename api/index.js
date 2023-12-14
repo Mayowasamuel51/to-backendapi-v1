@@ -301,11 +301,17 @@ async function handleResponse(response) {
 
 app.post("/api/orders", async (req, res) => {
   try {
+    let total = 0;
+    let courseName = '';
     // use the cart information passed from the front-end to calculate the order amount detals
-
     const { cart } = req.body;
+    cart.forEach((item) => {
+      console.log(item.courseName)
+      total += item.price
+    })
     
-    console.log(cart)
+    console.log('total cart price is ' + total)
+    console.log('these are the course selected  ' + courseName)
     const { jsonResponse, httpStatusCode } = await createOrder(cart);
     res.status(httpStatusCode).json(jsonResponse);
   } catch (error) {

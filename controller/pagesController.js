@@ -2,7 +2,7 @@ const Contact = require('../model/contact.js');
 const Contractors = require('../model/contractors.js')
 const User = require("../model/user.js")
 const Message = require('../model/messages');
-const { validationResult } = require('express-validator')
+
 const contact = async (req, res, next) => {
     // const { name, email, number, message } = req.body;
     try {
@@ -130,9 +130,9 @@ const showStudent = async (req, res, next) => {
     // showing all student  with jwt and google ones
     // show name, email  createdAt
     try {
-        const response = await User.find()
-            // .sort({ $natural: -1 }).limit(60)
-            .distinct('email')
+        const response = await User.find().select("-password")
+            .sort({ $natural: -1 }).limit(60)
+            // .distinct('email')
         res.status(200).json({
             response:response
         })

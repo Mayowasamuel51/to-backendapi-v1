@@ -23,6 +23,7 @@ const signup = (req, res, next) => {
         const user = new User({
             name: name,
             email: email,
+            provider:"email and password",
             password: hased
         })
         user.save().then((result) => {
@@ -122,7 +123,6 @@ const googleAuth = async (req, res, next) => {
     /// storing only google users
     try {
         const { name, email } = req.body;
-
         // Check if user already exists with the provided email
         const existingUser = await User.findOne({ email });
 
@@ -134,13 +134,14 @@ const googleAuth = async (req, res, next) => {
             return res.status(200).json({
                 email: email,
                 response: existingUser,
-                token: token
+                token: token,
+                provider: "google"
             });
-            // return next();
+
         }
 
         // New user - create with provided name and email
-        const createdUser = await User.create({ name, email });
+        const createdUser = await User.create({ name, email ,provider:"google"});
         console.log(`New user created: ${createdUser._id}`);
 
         // Generate and return token for new user
@@ -150,6 +151,7 @@ const googleAuth = async (req, res, next) => {
             email: createdUser.email,
             response: createdUser,
             token,
+
         });
 
     } catch (err) {

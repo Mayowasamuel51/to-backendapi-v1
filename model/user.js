@@ -15,7 +15,10 @@ const User = new Schema({
     },
     status: {
         type: String,
-        default:'i am new '
+        default:'welcome to To'
+    },
+    provider: {
+        type: String,  
     },
     date: {
         type: Date,

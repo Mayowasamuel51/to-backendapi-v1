@@ -42,10 +42,10 @@ const createOrder = async (req, res, next) => {
 }
 
 
-/* A  function  called sendliveCourses for sending live google meet to student for meet up ,live courses are Splunk , Educational
+/* A  function  called sendliveCoursesSplunk for sending live google meet to student for meet up ,live courses are Splunk , Educational
 this function will only work for auth users and paid course users (Splunk, and Educational )
 */
-const sendliveCourses = async (req, res, next) => {
+const sendliveCoursesSplunk = async (req, res, next) => {
     try {
         const { course } = req.body;
         const response = await LiveCourse.create({
@@ -63,6 +63,26 @@ const sendliveCourses = async (req, res, next) => {
         console.log(err.message)
     }
 }
+
+const sendliveCoursesEducation = async (req, res, next) => {
+    try {
+        const { course } = req.body;
+        const response = await LiveCourse.create({
+            courses:course
+        })
+        res.status(201).json({
+            response:response
+        })
+
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err)
+        console.log(err.message)
+    }
+}
+
 // A functiom called getLink perform a task of sending link to live courses paid user will be working with the payment database to check if they have paid
 const getLink = async (req, res, next) => {
     
@@ -70,7 +90,8 @@ const getLink = async (req, res, next) => {
 
 
 module.exports = {
-    sendliveCourses,
+    sendliveCoursesSplunk,
+    sendliveCoursesEducation,
     createOrder,
     myLearning
 }

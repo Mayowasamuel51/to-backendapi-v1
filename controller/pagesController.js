@@ -31,7 +31,7 @@ const contact = async (req, res, next) => {
 }
 const getcontact = async (req, res, next) => {
     try {
-        const response = await Contact.find();
+        const response = await Contact.find().sort({ $natural: -1 }).limit(60)
         res.status(200).json({
             data: response,
             message: "all contact's"

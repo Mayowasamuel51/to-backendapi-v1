@@ -3,6 +3,8 @@ const Contractors = require('../model/contractors.js')
 const User = require("../model/user.js")
 const Message = require('../model/messages');
 
+
+
 const contact = async (req, res, next) => {
     // const { name, email, number, message } = req.body;
     try {
@@ -29,6 +31,7 @@ const contact = async (req, res, next) => {
         console.log(err.message)
     }
 }
+
 const getcontact = async (req, res, next) => {
     try {
         const response = await Contact.find().sort({ $natural: -1 }).limit(60)
@@ -45,6 +48,7 @@ const getcontact = async (req, res, next) => {
         console.log(err.message)
     }
 }
+// this function  is used to send broadcase message to student dashboard
 const sendMessage = async (req, res, next) => {
     const { messages } = req.body;
 

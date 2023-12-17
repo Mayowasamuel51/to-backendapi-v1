@@ -7,6 +7,7 @@ const cors = require('cors')
 const dashboardroutes = require('../routes/dashboard.js')
 const authroutes = require('../routes/auth.js')
 const pagesroutes = require('../routes/pages.js')
+const adminroutes = require('../routes/adminroutes.js')
 const Paypal = require('@paypal/checkout-server-sdk')
 const Middleware = require('../middleware/auth')
 const dotenv = require('dotenv')
@@ -100,6 +101,13 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
   next()
 })
+
+
+app.use('/api', pagesroutes)
+app.use('/api', dashboardroutes)
+app.use('/api', authroutes)
+app.use('/api', adminroutes)
+
 function get_access_token() {
   const auth = `${client_id}:${client_secret}`
   const data = 'grant_type=client_credentials'
@@ -331,9 +339,6 @@ app.post("/api/orders/:orderID/capture", async (req, res) => {
   }
 });
 
-app.use('/api', pagesroutes)
-app.use('/api', dashboardroutes)
-app.use('/api', authroutes)
 
 app.get('/okay', (req, res) => {
   res.json({ ok: "sdsfs" })

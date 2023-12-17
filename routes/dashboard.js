@@ -12,6 +12,7 @@ router.post('/livesplunk',dashboard.sendliveCoursesSplunk)
 // sending live google meet to paid users   of  Educational   courses  
 router.post('/liveseducation', dashboard.sendliveCoursesEducation)
 
+
 /// middlware for both 
 router.get('/mylearning', auth.Authmiddleware,  dashboard.myLearning)
     

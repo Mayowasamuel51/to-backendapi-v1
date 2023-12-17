@@ -28,7 +28,6 @@ router.post('/contact', [
 // get all contact from the frontend 
 router.get('/contact', pagesController.getcontact)
 
-
 // geting the lastest messages 
 router.get('/messages', pagesController.getMessage)
 /// creating a public by the admin

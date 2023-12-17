@@ -3,7 +3,7 @@ const User = require('../model/user.js');
 const jwt = require('jsonwebtoken')
 const Payment = require('../model/payment.js')
 const LiveCourse = require('../model/livecourses.js')
-
+const Comment = require('../model/comment.js')
 
 const myLearning = (req, res, next) => {
     res.status(200).json("i can see me now")
@@ -41,7 +41,42 @@ const createOrder = async (req, res, next) => {
     }
 }
 
+/// getting comment from studnet 
+const commentPost = async (req, res, next) => {
+    try {
+        const { message } = req.body;
+        const response = await Comment.create({
+            message: message
+        })
+        res.status(201).json({
+            response: response
+        })
 
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err)
+        console.log(err.message)
+    }
+}
+// getting all comment from stundent to be show on the admin dashboard 
+const commentGet = async (req, res, next) => {
+    try {
+        // get the lastest message from the database !!!!!!
+        const response = await Comment.find().sort({ $natural: -1 }).limit(200)
+        res.status(200).json({
+            response: response
+        })
+
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err)
+        console.log(err.message)
+    }
+}
 /* A  function  called sendliveCoursesSplunk for sending live google meet to student for meet up ,live courses are Splunk , Educational
 this function will only work for auth users and paid course users (Splunk, and Educational )
 */
@@ -49,10 +84,10 @@ const sendliveCoursesSplunk = async (req, res, next) => {
     try {
         const { course } = req.body;
         const response = await LiveCourse.create({
-            courses:course
+            courses: course
         })
         res.status(201).json({
-            response:response
+            response: response
         })
 
     } catch (err) {
@@ -68,10 +103,10 @@ const sendliveCoursesEducation = async (req, res, next) => {
     try {
         const { course } = req.body;
         const response = await LiveCourse.create({
-            courses:course
+            courses: course
         })
         res.status(201).json({
-            response:response
+            response: response
         })
 
     } catch (err) {
@@ -85,7 +120,7 @@ const sendliveCoursesEducation = async (req, res, next) => {
 
 // A functiom called getLink perform a task of sending link to live courses paid user will be working with the payment database to check if they have paid
 const getLink = async (req, res, next) => {
-    
+
 }
 
 

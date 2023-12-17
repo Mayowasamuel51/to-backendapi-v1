@@ -48,10 +48,9 @@ const getcontact = async (req, res, next) => {
         console.log(err.message)
     }
 }
-// this function  is used to send broadcase message to student dashboard
+// this function  is used to send broadcast  message to student dashboard
 const sendMessage = async (req, res, next) => {
     const { messages } = req.body;
-
     try {
         const message = await Message.create({
             message: messages
@@ -72,7 +71,7 @@ const getMessage = async (req, res, next) => {
         // get the lastest message from the database !!!!!!
         const response = await Message.find().sort({ $natural: -1 }).limit(1)
         res.status(200).json({
-            messages: response
+            response: response
         })
 
     } catch (err) {

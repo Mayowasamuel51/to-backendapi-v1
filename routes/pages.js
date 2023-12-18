@@ -2,6 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { body } = require('express-validator')
 const pagesController = require('../controller/pagesController')
+const dashboard = require('../controller/DashboardController.js')
+
+
+/// comment post 
+router.get('/comment',dashboard.commentGet)
 
 // getting total students from the database 
 router.get('/total', pagesController.totalStudent)

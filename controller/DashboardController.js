@@ -44,9 +44,9 @@ const createOrder = async (req, res, next) => {
 /// getting comment from studnet 
 const commentPost = async (req, res, next) => {
     try {
-        const { message } = req.body;
+        const { comment} = req.body;
         const response = await Comment.create({
-            message: message
+            message: comment
         })
         res.status(201).json({
             response: response
@@ -125,6 +125,8 @@ const getLink = async (req, res, next) => {
 
 
 module.exports = {
+    commentGet,
+    commentPost,
     sendliveCoursesSplunk,
     sendliveCoursesEducation,
     createOrder,

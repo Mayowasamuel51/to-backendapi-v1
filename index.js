@@ -6,6 +6,11 @@ const cors = require("cors");
 // app.use(cors({ origin: "http://localhost:8000", optionsSuccessStatus: 200 }))
 app.use(cors())
 // // connecting the server and frontend
+app.all('*', (req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "https://www.to-analytics.com");
+    next();
+});
+
 app.use((req, res, next) => {
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Content-Allow-Orgin', 'https://www.to-analytics.com')
@@ -14,5 +19,6 @@ app.use((req, res, next) => {
     response.head("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next()
 })
+
 
 module.exports = app

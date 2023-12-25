@@ -22,6 +22,10 @@ mongoose.connect("mongodb+srv://fpasamuelmayowa51:5iX35jgh9yB9P6Im@cluster0.unk3
 app.use(cors())
 
 
+app.all('*', (req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://www.to-analytics.com");
+  next();
+});
 
 // const Environment =
 //   process.env.NODE_ENV === "production"
@@ -98,7 +102,6 @@ app.use(cors())
 // // connecting the server and frontend
 app.use((req, res, next) => {
   res.setHeader('Content-Type', 'application/json');
-  
   res.setHeader('Access-Content-Allow-Orgin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH,DELTE')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')

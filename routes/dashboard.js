@@ -8,7 +8,7 @@ const Middleware = require("../middleware/auth");
 /// comment post
 router.post("/comment", dashboard.commentPost);
 
-// sending live google meet to paid users  Splunk and Educational   courses
+// sending live google meet to paid users  Splunk  courses
 router.post("/livesplunk", dashboard.sendliveCoursesSplunk);
 
 // sending live google meet to paid users   of  Educational   courses

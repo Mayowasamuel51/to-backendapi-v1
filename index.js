@@ -7,7 +7,7 @@ const cors = require("cors");
 app.use(cors())
 // // connecting the server and frontend
 app.all('*', (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "https://www.to-analytics.com");
+    res.header("Access-Control-Allow-Origin", "*");
     next();
 });
 

@@ -13,6 +13,8 @@ const Middleware = require('../middleware/auth')
 const dotenv = require('dotenv')
 const paypal = require("@paypal/checkout-server-sdk")
 const dotenvb = require('dotenv').config();
+var cookieParser = require('cookie-parser')
+app.use(cookieParser())
 mongoose.connect("mongodb+srv://fpasamuelmayowa51:5iX35jgh9yB9P6Im@cluster0.unk3ntp.mongodb.net/datausers")
   .then((res) => console.log('database connected!!!'))
   .catch((err) => console.log(err.message))
@@ -236,18 +238,20 @@ const createOrder = async (cart) => {
     "shopping cart information passed from the frontend createOrder() callback:",
     cart,
   );
-  console.log(cart)
+  // console.log(cart)
   const accessToken = await generateAccessToken();
   const url = `${base}/v2/checkout/orders`;
 
-
+  cart.forEach((item)=>{
+    console.log(item.studentName, item.price , item.courseName)
+  })
   const payload = {
     intent: "CAPTURE",
     purchase_units: [
       {
         amount: {
           currency_code: "USD",
-          value:1232
+          value:1
             // total,               // come from the frontend
         },
       },
@@ -309,17 +313,8 @@ async function handleResponse(response) {
 
 app.post("/api/orders", async (req, res) => {
   try {
-    let total = 0;
-    let courseName = '';
     // use the cart information passed from the front-end to calculate the order amount detals
     const { cart } = req.body;
-    // cart.forEach((item) => {
-    //   console.log(item.courseName)
-    //   total += item.price
-    // })
-    
-    // console.log('total cart price is ' + total)
-    // console.log('these are the course selected  ' + courseName)
     const { jsonResponse, httpStatusCode } = await createOrder(cart);
     res.status(httpStatusCode).json(jsonResponse);
   } catch (error) {

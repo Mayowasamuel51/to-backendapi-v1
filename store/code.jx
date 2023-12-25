@@ -1,3 +1,71 @@
+const sendliveCoursesSplunk = async (req, res, next) => {
+  try {
+    // const { course } = req.body;
+    const { email, link } = req.body;
+    // const response = await LiveCourse.create({
+    //   courses: course,
+    // });
+    // res.status(201).json({
+    //   response: response,
+    // });
+    /// know who paid for live splunk from payment database
+    /// send link to who paid for splunk
+    // finding or searching for letters of splunk in the database;
+    let userId = req.userId;
+    let user = await Payment.findById(userId);
+
+    // Fetch out courseNames first with studnet email who paid
+    // After fetching those that paid then send link to them
+    // So send to the paid student email
+
+    // const courses =await Payment.find({courseName:{$regex: /^EducationalConsulting,/i}})
+    // const courses =await Payment.find({courseName:{$eq:'splunk'}})
+    let savednames = [];
+    const courses = await Payment.find({
+      courseName: { $regex: /splunk/i },
+    });
+    // console.log('email', courses)
+    // courses.forEach((names)=>{
+    //     savednames = names.studentName
+    //     console.log(names.studentName)
+    // })
+    if (courses) {
+      // insert the links into the link database .
+      // then the paid studnet will access it
+      // store payment names into the array
+      const mainnames = courses.map((names) => {
+        console.log(names.studentName);
+        return names.studentName;
+      });
+      const createLinks = await Link_splunk.create({
+        email: mainnames,
+        link: link,
+      });
+      return res.status(201).json({ message: "repsone", data: createLinks });
+      // return res.status(200).json({message:"",})
+    }
+    // return res.status(201).json({ message: "repsone", data:courses });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+    console.log(err.message);
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
 const { validationResult } = require("express-validator");
 const User = require("../model/user.js");
 const jwt = require("jsonwebtoken");
@@ -5,7 +73,6 @@ const Payment = require("../model/payment.js");
 const LiveCourse = require("../model/livecourses.js");
 const Comment = require("../model/comment.js");
 const Link_splunk = require("../model/Link_splunk.js");
-const Link_educational = require("../model/link_eductional.js");
 const myLearning = (req, res, next) => {
   res.status(200).json("i can see me now");
 };
@@ -95,22 +162,7 @@ const getSplunkUsers = async (req, res, next) => {
     console.log(err.message);
   }
 };
-// get amount of people who paid for Educational!!!
-const getEducationalUsers = async (req, res, next) => {
-  try {
-    const courses = await Payment.find({
-      courseName: { $regex: /Educational Consulting/i },
-    }).countDocuments();
-    res.status(201).json({ message: "repsone", response: courses });
-    
-  } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
-    console.log(err.message);
-  }
-};
+
 /* A  function  called sendliveCoursesSplunk for sending live google meet to student for meet up ,live courses are Splunk , Educational
 this function will only work for auth users and paid course users (Splunk, and Educational )
 */
@@ -158,41 +210,14 @@ const sendliveCoursesSplunk = async (req, res, next) => {
 };
 
 const sendliveCoursesEducation = async (req, res, next) => {
-  // if student has paid for Educational  courses then the admin should see total of student they are sending link to else  the input in the frontend shoulb blur or something
   try {
-    const { email, link } = req.body;
-
-    /// know who paid for live Educational from payment database
-    /// send link to who paid for Educational
-    // finding or searching for letters of Educational in the database;
-
-    // Fetch out courseNames first with studnet email who paid
-    // After fetching those that paid then send link to them
-    // So send to the paid student email
-
-    const courses = await Payment.find({
-      courseName: { $regex: /Educational Consulting/i },
+    const { course } = req.body;
+    const response = await LiveCourse.create({
+      courses: course,
     });
-
-    if (courses) {
-      // insert the links into the link database .
-      // then the paid studnet will access it
-      // store payment names into the array
-      const mainnames = courses.map((names) => {
-        console.log(names.studentName);
-        return names.studentName;
-      });
-      const createLinks = await Link_educational.create({
-        email: mainnames,
-        link: link,
-      
-      });
-      console.log(createLinks)
-      return res.status(201).json({ message: "repsone", data: createLinks });
-      // return res.status(200).json({message:"",})
-    } else {
-      return res.status(200).json({ message: "ERROR" });
-    }
+    res.status(201).json({
+      response: response,
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -209,24 +234,34 @@ const getLink = async (req, res, next) => {
     const email = req.params.email;
     console.log(email);
     const linking = await Link_splunk.findOne({ email: email });
-    // const
-    // courses =
-    //  await Payment.find({
-    //     courseName: { $regex: /splunk/i },
-    //   });
-
     if (!linking) {
       const error = new Error("sorry you didnt subscribe for the course ");
       error.statusCode = 404;
       throw error;
     }
-    const sendlink =
-      // await Link_splunk.find({ link: { $eq: "link" } });
-      await Link_splunk.find().sort({ $natural: -1 }).limit(1);
+    const sendlink = await Link_splunk.find().distinct("link");
     res.status(200).json({
       response: sendlink,
     });
     console.log(linking);
+    // if (courses) {
+    // const mainnames = linking.forEach((names) => {
+    //     console.log(names);
+    //     // return email === names.email;
+    // });
+    // //   .filter((findnamepaid) => {
+    // //     return email === findnamepaid.studentName;
+    // //   });
+    // // if (mainnames) {
+    // console.log(mainnames);
+
+    // } else {
+    //   res.status(404).json({
+    //     response: "not found splunk names",
+    //     // names: mainnames,
+    //   });
+    // }
+    // }
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -236,36 +271,8 @@ const getLink = async (req, res, next) => {
   }
 };
 // console.log(sendliveCoursesSplunk())
-const getLinkEducation = async (req, res, next) => {
-  // send link to paid live courses for Educational to their eamil point to their email!!!!!!
-  try {
-    const email = req.params.email;
-    console.log(email);
-    const linking = await Link_educational.findOne({ email: email });
-    
-    if (!linking) {
-      const error = new Error("sorry you didnt subscribe for the course ");
-      error.statusCode = 404;
-      throw error;
-    }
-    const sendlink =
-      // await Link_splunk.find({ link: { $eq: "link" } });
-      await Link_educational.find().sort({ $natural: -1 }).limit(1);
-    res.status(200).json({
-      response: sendlink,
-    });
-    console.log(linking);
-  } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
-    console.log(err.message);
-  }
-};
+
 module.exports = {
-  getEducationalUsers,
-  getLinkEducation,
   getSplunkUsers,
   getLink,
   allPayment,

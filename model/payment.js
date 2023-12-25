@@ -4,6 +4,9 @@ const Payment = new Schema({
     courseName: {
         type:String
     },
+    price:{
+        type:Number,
+    },
     studentName: {
         type:String
     },

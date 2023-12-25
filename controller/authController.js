@@ -15,8 +15,11 @@ const signup = (req, res, next) => {
     const { email, name, password } = req.body;
     // check if user exist first 
 
-    const token = jwt.sign({ email: email }, 'sfcdhbvdhs vsdvjsvsvvd', {
-        expiresIn: '1h'
+    const token = jwt.sign({ email: email }, 
+        // 'sfcdhbvdhs vsdvjsvsvvd'
+        process.env.JWT_SECRET
+        , {
+        expiresIn: process.env.JWT_TIME
     })
 
     bcrypt.hash(password, 12).then(hased => {
@@ -68,8 +71,10 @@ const login = (req, res, next) => {
             throw error;
         }
         const token = jwt.sign({ email: loadedUser.email, userId: loadedUser._id.toString() },
-            'sfcdhbvdhs vsdvjsvsvvd', {
-            expiresIn: '1h'
+            // 'sfcdhbvdhs vsdvjsvsvvd',
+            process.env.JWT_SECRET,
+             {
+            expiresIn:  process.env.JWT_TIME
         })
         res.status(200).json({
             message: 'welcome',
@@ -94,7 +99,10 @@ const userInfo = async (req, res, next) => {
     let decodeToken;
     let decodeValue;
     try {
-        decodeToken = jwt.verify(token, 'sfcdhbvdhs vsdvjsvsvvd')
+        decodeToken = jwt.verify(token, 
+            // 'sfcdhbvdhs vsdvjsvsvvd'
+            process.env.JWT_TIME,
+            )
         console.log(decodeToken)
         return res.status(200).json({
             token: decodeToken
@@ -129,7 +137,10 @@ const googleAuth = async (req, res, next) => {
         if (existingUser) {
             // Existing user found, log in and return token
             const token = jwt.sign({ email, userId: existingUser._id.toString() },
-                process.env.JWT_SECRET, { expiresIn: '1h' }); // Use environment variable for JWT secret
+                process.env.JWT_SECRET, { 
+                    expiresIn:   process.env.JWT_TIME
+                    // '5h' 
+                }); // Use environment variable for JWT secret
             console.log(`User already exists: ${existingUser._id}`);
             return res.status(200).json({
                 email: email,
@@ -146,7 +157,7 @@ const googleAuth = async (req, res, next) => {
 
         // Generate and return token for new user
         const token = jwt.sign({ email: createdUser.email, userId: createdUser._id.toString() },
-            process.env.JWT_SECRET, { expiresIn: '1h' });
+            process.env.JWT_SECRET, { expiresIn:  process.env.JWT_TIME });
         res.status(201).json({
             email: createdUser.email,
             response: createdUser,

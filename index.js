@@ -1,5 +1,4 @@
 const app = require('./api/index')
-
 const cors = require("cors");
 
 // app.options("*", cors({ origin: 'http://localhost:8000', optionsSuccessStatus: 200 }));

@@ -8,7 +8,7 @@ const mixMiddleware = async (req, res, next) => {
 
     const authH = req.get('Authorization');
     if (!authH) {
-        const error = new Error('NOR AUTHENTICATICED USER');
+        const error = new Error('NOT AUTHENTICATICED USER');
         error.statusCode = 401;
         throw error;
     }
@@ -51,7 +51,7 @@ const mixMiddleware = async (req, res, next) => {
 const Authmiddleware = (req, res, next) => {
     const authH = req.get('Authorization');
     if (!authH) {
-        const error = new Error('NOR AUTHENTICATICED');
+        const error = new Error('NOT AUTHENTICATICED');
         error.statusCode = 401;
         throw error;
     }

@@ -13,6 +13,8 @@ const Middleware = require('../middleware/auth')
 const dotenv = require('dotenv')
 const paypal = require("@paypal/checkout-server-sdk")
 const dotenvb = require('dotenv').config();
+const cookiesMiddleware = require('universal-cookie-express');
+var cookieParser = require('cookie-parser')
 // var cookieParser = require('cookie-parser')
 // app.use(cookieParser())
 mongoose.connect("mongodb+srv://fpasamuelmayowa51:5iX35jgh9yB9P6Im@cluster0.unk3ntp.mongodb.net/datausers")
@@ -21,6 +23,9 @@ mongoose.connect("mongodb+srv://fpasamuelmayowa51:5iX35jgh9yB9P6Im@cluster0.unk3
 
 app.use(cors())
 
+app.set('cookie.sameSite', 'Strict'); // Default for all cookies
+app
+  .use(cookiesMiddleware())
 
 app.all('*', (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -101,6 +106,7 @@ app.all('*', (req, res, next) => {
 
 // // connecting the server and frontend
 app.use((req, res, next) => {
+  res.cookie('myCookie', 'value', { sameSite: 'Strict' });
   res.setHeader('Content-Type', 'application/json');
   res.setHeader('Access-Content-Allow-Orgin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH,DELTE')

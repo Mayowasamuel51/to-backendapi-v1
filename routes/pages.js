@@ -3,11 +3,12 @@ const router = express.Router();
 const { body } = require('express-validator')
 const pagesController = require('../controller/pagesController')
 const dashboard = require('../controller/DashboardController.js')
+const NewController = require('../controller/newController.js')
 
-
+///routes for the new page  api 
+router.get('/news', NewController.newApi)
 /// comment post 
 router.get('/comment',dashboard.commentGet)
-
 // getting total students from the database 
 router.get('/total', pagesController.totalStudent)
 /// showing all student with jwt and firebase 

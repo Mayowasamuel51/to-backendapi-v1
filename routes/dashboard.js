@@ -45,8 +45,9 @@ router.get(
 /// middlware for both
 router.get("/mylearning", auth.Authmiddleware, dashboard.myLearning);
 
-router.post("/order", dashboard.createOrder);
 
+
+router.post("/order", dashboard.createOrder);
 router.get("/order", dashboard.allPayment);
 
 module.exports = router;

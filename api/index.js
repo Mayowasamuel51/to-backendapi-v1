@@ -1,33 +1,38 @@
-const express = require('express');
-const app = express()
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser')
-app.use(bodyParser.json()) // application/json
-const cors = require('cors')
-const dashboardroutes = require('../routes/dashboard.js')
-const authroutes = require('../routes/auth.js')
-const pagesroutes = require('../routes/pages.js')
-const adminroutes = require('../routes/adminroutes.js')
-const Paypal = require('@paypal/checkout-server-sdk')
-const Middleware = require('../middleware/auth')
-const dotenv = require('dotenv')
-const paypal = require("@paypal/checkout-server-sdk")
-const dotenvb = require('dotenv').config();
-const cookiesMiddleware = require('universal-cookie-express');
-var cookieParser = require('cookie-parser')
+const express = require("express");
+const app = express();
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+app.use(bodyParser.json()); // application/json
+const cors = require("cors");
+const dashboardroutes = require("../routes/dashboard.js");
+const authroutes = require("../routes/auth.js");
+const pagesroutes = require("../routes/pages.js");
+const adminroutes = require("../routes/adminroutes.js");
+const Paypal = require("@paypal/checkout-server-sdk");
+const Middleware = require("../middleware/auth");
+const dotenv = require("dotenv");
+const paypal = require("@paypal/checkout-server-sdk");
+const dotenvb = require("dotenv").config();
+const cookiesMiddleware = require("universal-cookie-express");
+const Payment = require("../model/payment.js");
+var cookieParser = require("cookie-parser");
 // var cookieParser = require('cookie-parser')
 // app.use(cookieParser())
-mongoose.connect("mongodb+srv://fpasamuelmayowa51:5iX35jgh9yB9P6Im@cluster0.unk3ntp.mongodb.net/datausers")
-  .then((res) => console.log('database connected!!!'))
-  .catch((err) => console.log(err.message))
+// require("dotenv").config({ path: __dirname + "/.env" });
+const CronJob = require("cron").CronJob;
+mongoose
+  .connect(
+    "mongodb+srv://fpasamuelmayowa51:5iX35jgh9yB9P6Im@cluster0.unk3ntp.mongodb.net/datausers"
+  )
+  .then((res) => console.log("database connected!!!"))
+  .catch((err) => console.log(err.message));
 
-app.use(cors())
+app.use(cors());
 
-app.set('cookie.sameSite', 'Strict'); // Default for all cookies
-app
-  .use(cookiesMiddleware())
+app.set("cookie.sameSite", "Strict"); // Default for all cookies
+app.use(cookiesMiddleware());
 
-app.all('*', (req, res, next) => {
+app.all("*", (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   next();
 });
@@ -46,7 +51,6 @@ app.all('*', (req, res, next) => {
 //   [1, { price: 100, name: "Learn React Today" }],
 //   [2, { price: 200, name: "Learn CSS Today" }],
 // ])
-
 
 // app.post("/create-order", async (req, res) => {
 //   const request = new paypal.orders.OrdersCreateRequest()
@@ -91,7 +95,6 @@ app.all('*', (req, res, next) => {
 //   }
 // })
 
-
 // const paypal = require("@paypal/checkout-server-sdk")
 // const Environment =
 //   process.env.NODE_ENV === "production"
@@ -106,40 +109,61 @@ app.all('*', (req, res, next) => {
 
 // // connecting the server and frontend
 app.use((req, res, next) => {
-  res.cookie('myCookie', 'value', { sameSite: 'Strict' });
-  res.setHeader('Content-Type', 'application/json');
-  res.setHeader('Access-Content-Allow-Orgin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH,DELTE')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-  next()
-})
+  res.cookie("myCookie", "value", { sameSite: "Strict" });
+  res.setHeader("Content-Type", "application/json");
+  res.setHeader("Access-Content-Allow-Orgin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH,DELTE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
+// const { twitterClient, twitterNews } = require("../twitterclient.js");
+// const tweet = async () => {
+//   try {
+//     // await twitterClient.v2.tweet("new calls from me  to twitters");
+//     // const response = await (await twitterNews.currentUserV2()).data.username
+//     const secondRespone = await ((await twitterNews.v2.followers()).data)
+//     console.log(secondRespone)
+//     // console.log(response);
+//   } catch (e) {
+//     console.log(e);
+//   }
+// };
+// const cronTweet = new CronJob("30 * * * * *", async () => {
+// tweet();
+// });
+// cronTweet.start();
 
 
-app.use('/api', pagesroutes)
-app.use('/api', dashboardroutes)
-app.use('/api', authroutes)
-app.use('/api', adminroutes)
+
+app.use("/api", pagesroutes);
+app.use("/api", dashboardroutes);
+app.use("/api", authroutes);
+app.use("/api", adminroutes);
 
 function get_access_token() {
-  const auth = `${client_id}:${client_secret}`
-  const data = 'grant_type=client_credentials'
-  return fetch(endpoint_url + '/v1/oauth2/token', {
-    method: 'POST',
+  const auth = `${client_id}:${client_secret}`;
+  const data = "grant_type=client_credentials";
+  return fetch(endpoint_url + "/v1/oauth2/token", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': `Basic ${Buffer.from(auth).toString('base64')}`
+      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization: `Basic ${Buffer.from(auth).toString("base64")}`,
     },
-    body: data
+    body: data,
   })
-    .then(res => res.json())
-    .then(json => {
+    .then((res) => res.json())
+    .then((json) => {
       return json.access_token;
-    }).catch((err) => console.log(err.message))
+    })
+    .catch((err) => console.log(err.message));
 }
-const environment = process.env.ENVIRONMENT || 'sandbox';
+const environment = process.env.ENVIRONMENT || "sandbox";
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
-const endpoint_url = environment === 'sandbox' ? 'https://api-m.sandbox.paypal.com' : 'https://api-m.paypal.com';
+const endpoint_url =
+  environment === "sandbox"
+    ? "https://api-m.sandbox.paypal.com"
+    : "https://api-m.paypal.com";
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8888 } = process.env;
 const base = "https://api-m.sandbox.paypal.com";
 
@@ -210,14 +234,13 @@ const base = "https://api-m.sandbox.paypal.com";
 //         })
 // });
 
-
 const generateAccessToken = async () => {
   try {
     if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET) {
       throw new Error("MISSING_API_CREDENTIALS");
     }
     const auth = Buffer.from(
-      PAYPAL_CLIENT_ID + ":" + PAYPAL_CLIENT_SECRET,
+      PAYPAL_CLIENT_ID + ":" + PAYPAL_CLIENT_SECRET
     ).toString("base64");
     const response = await fetch(`${base}/v1/oauth2/token`, {
       method: "POST",
@@ -240,29 +263,38 @@ const generateAccessToken = async () => {
 //  */
 const storeItems = new Map([
   [1, { price: 200, name: "Learn splunt" }],
-  [2, { price: 300, name: "learn that" }]
-  ,])
+  [2, { price: 300, name: "learn that" }],
+]);
+let mainPrice = 0;
+let mainCourseName = "";
+let mainStudentName = "";
 const createOrder = async (cart) => {
   // use the cart information passed from the front-end to calculate the purchase unit details
   console.log(
     "shopping cart information passed from the frontend createOrder() callback:",
-    cart,
+    cart
   );
   // console.log(cart)
   const accessToken = await generateAccessToken();
   const url = `${base}/v2/checkout/orders`;
 
-  cart.forEach((item)=>{
-    console.log(item.studentName, item.price , item.courseName)
-  })
+  cart.forEach((item) => {
+    // console.log(item.studentName, item.price, item.courseName);
+    mainCourseName = [item.courseName];
+    mainStudentName = item.studentName;
+    mainPrice += item.price;
+    console.log(mainCourseName, mainStudentName, mainPrice);
+  });
   const payload = {
     intent: "CAPTURE",
     purchase_units: [
       {
         amount: {
           currency_code: "USD",
-          value:1
-            // total,               // come from the frontend
+          value: mainPrice,
+          studentName: mainStudentName,
+          courseName: mainCourseName,
+          // total,               // come from the frontend
         },
       },
     ],
@@ -337,6 +369,34 @@ app.post("/api/orders/:orderID/capture", async (req, res) => {
   try {
     const { orderID } = req.params;
     const { jsonResponse, httpStatusCode } = await captureOrder(orderID);
+    //now it time to store the data from the frontend to the database  and make the payment to paypal ;
+    if (httpStatusCode === 201 || httpStatusCode === 200) {
+      let db = new Database();
+      let userId = db.getUserFromToken(req.token);
+      let order = {
+        Order: new Date(),
+        UserId: userId._id,
+        Products: jsonResponse.purchase_units[0].description,
+        Amount: jsonResponse.purchase_units[0].amount.value,
+        Status: "In Process",
+      };
+      const { studentName, courseName, payment_mode, payment_id, price } =
+        req.body;
+      try {
+        const paymentuser = await Payment.create({
+          studentName: jsonResponse.purchase_units[0].amount.studentName,
+          courseName: jsonResponse.purchase_units[0].amount.courseName,
+          payment_id: orderID,
+          payment_mode: payment_mode,
+          price: jsonResponse.purchase_units[0].amount.value,
+        });
+        res.status(201).json({
+          data: paymentuser,
+          message: "is done well!!!!!!",
+        });
+        console.log(paymentuser);
+      } catch (err) {}
+    }
     res.status(httpStatusCode).json(jsonResponse);
   } catch (error) {
     console.error("Failed to create order:", error);
@@ -344,22 +404,21 @@ app.post("/api/orders/:orderID/capture", async (req, res) => {
   }
 });
 
-
-app.get('/okay', (req, res) => {
-  res.json({ ok: "sdsfs" })
-})
+app.get("/okay", (req, res) => {
+  res.json({ ok: "sdsfs" });
+});
 
 /// genral error express
 app.use((error, req, res, next) => {
-  console.log(error.message)
-  const status = error.statusCode || 500
+  console.log(error.message);
+  const status = error.statusCode || 500;
   const message = error.message;
-  res.status(status).json({ message: message, error: "server error" })
-})
+  res.status(status).json({ message: message, error: "server error" });
+});
 
-const port = 8000||     process.env.PORT;
+const port = 8000 || process.env.PORT;
 app.listen(port, () => {
-  console.log('SERVER IS RUNNING   ' + port)
-})
+  console.log("SERVER IS RUNNING   " + port);
+});
 
 module.exports = app;

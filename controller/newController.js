@@ -12,7 +12,7 @@ const newApi = async (req, res, next) => {
         country: "us",
       })
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         res.status(200).json({
             response:response,
             message:"successfull"

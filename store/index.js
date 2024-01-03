@@ -116,6 +116,22 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
+// const { twitterClient, twitterNews } = require("../twitterclient.js");
+// const tweet = async () => {
+//   try {
+//     // await twitterClient.v2.tweet("new calls from me  to twitters");
+//     // const response = await (await twitterNews.currentUserV2()).data.username
+//     const secondRespone = await ((await twitterNews.v2.followers()).data)
+//     console.log(secondRespone)
+//     // console.log(response);
+//   } catch (e) {
+//     console.log(e);
+//   }
+// };
+// const cronTweet = new CronJob("30 * * * * *", async () => {
+// tweet();
+// });
+// cronTweet.start();
 
 app.use("/api", pagesroutes);
 app.use("/api", dashboardroutes);
@@ -271,7 +287,7 @@ const createOrder = async (cart) => {
         amount: {
           currency_code: "USD",
           // value: mainPrice,
-          value: 1.0,
+          value:1.00,
           studentName: mainStudentName,
           courseName: mainCourseName,
           // total,               // come from the frontend

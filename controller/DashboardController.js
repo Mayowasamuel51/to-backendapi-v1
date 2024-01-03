@@ -41,7 +41,9 @@ const createOrder = async (req, res, next) => {
       message: "is done well!!!!!!",
     });
     console.log(paymentuser);
-  } catch (err) {}
+  } catch (err) {
+    
+  }
 };
 
 /// getting comment from studnet

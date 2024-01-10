@@ -24,28 +24,29 @@ router.get(
 // total educational users
 router.get(
   "/educational",
-//    auth.Authmiddleware,
+  //    auth.Authmiddleware,
   dashboard.getEducationalUsers
 );
 
 /// student getting the links for splunk
-router.get(
-  "/link/:email",
-   auth.Authmiddleware,
-  dashboard.getLink
-);
+router.get("/link/:email", auth.Authmiddleware, dashboard.getLink);
 
 /// student getting the links for Educational
 router.get(
   "/linkeducational/:email",
-   auth.Authmiddleware,
+  auth.Authmiddleware,
   dashboard.getLinkEducation
 );
 
 /// middlware for both
 router.get("/mylearning", auth.Authmiddleware, dashboard.myLearning);
 
-
+// showing student the paid courses they bought
+router.get(
+  "/paidcourses/:email",
+  // auth.Authmiddleware,
+  dashboard.showPaidCourses
+);
 
 router.post("/order", dashboard.createOrder);
 router.get("/order", dashboard.allPayment);

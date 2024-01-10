@@ -41,9 +41,7 @@ const createOrder = async (req, res, next) => {
       message: "is done well!!!!!!",
     });
     console.log(paymentuser);
-  } catch (err) {
-    
-  }
+  } catch (err) {}
 };
 
 /// getting comment from studnet
@@ -80,7 +78,6 @@ const commentGet = async (req, res, next) => {
     console.log(err.message);
   }
 };
-
 // get amount of people who paid for splunk!!!
 const getSplunkUsers = async (req, res, next) => {
   try {
@@ -104,7 +101,6 @@ const getEducationalUsers = async (req, res, next) => {
       courseName: { $regex: /Educational Consulting/i },
     }).countDocuments();
     res.status(201).json({ message: "repsone", response: courses });
-    
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -187,9 +183,8 @@ const sendliveCoursesEducation = async (req, res, next) => {
       const createLinks = await Link_educational.create({
         email: mainnames,
         link: link,
-      
       });
-      console.log(createLinks)
+      console.log(createLinks);
       return res.status(201).json({ message: "repsone", data: createLinks });
       // return res.status(200).json({message:"",})
     } else {
@@ -244,7 +239,7 @@ const getLinkEducation = async (req, res, next) => {
     const email = req.params.email;
     console.log(email);
     const linking = await Link_educational.findOne({ email: email });
-    
+
     if (!linking) {
       const error = new Error("sorry you didnt subscribe for the course ");
       error.statusCode = 404;
@@ -265,7 +260,72 @@ const getLinkEducation = async (req, res, next) => {
     console.log(err.message);
   }
 };
+
+// a function that shows the paid courses on the student dashboard
+const showPaidCourses = async (req, res, next) => {
+  // need to confirm if the person has paid for a course
+  // if paid then show or send a link to the frontend to indicate to show a video of the course been paid for
+  try {
+    // req.params.email
+    const email = req.params.email;
+    const paidcourses = await Payment.findOne({ email: email });
+    const courses_finding_paided =
+      (await Payment.find({
+        // just check the email paid for the linx course or any other course
+        courseName: { $regex: /Linux/i },
+      })) 
+      // || (await Payment.find({ courseName: { $regex: /splunk/i } }));
+    const findpaidusers = courses_finding_paided.filter((x) => {
+      return x.studentName === email  &&  x.courseName === "Linux"
+    });
+    if (courses_finding_paided) {
+      if (!findpaidusers) {
+        const error = new Error("sorry you didnt subscribe any course ");
+        error.statusCode = 404;
+        throw error;
+      }
+
+      //  courses_finding_paided.map((x)=>{
+      //   console.log(x.studentName)
+      //     return x.studentName
+      // })
+      res.status(200).json({
+        response: findpaidusers,
+        video: "WATCH THE VIDEO YOU HAVE PAID FOR PAID COURSE",
+      });
+      console.log(findpaidusers);
+    } else {
+      console.log("not true!!!!!");
+      return res.status(200).json({ message: "ERROR coundnt find person " });
+    }
+
+    // console.log(paidcourses)
+
+    // if (!paidcourses) {
+    //   const error = new Error("sorry you didnt subscribe for any  course ");
+    //   error.statusCode = 404;
+    //   throw error;
+    // }
+    // const sendlink =
+    //   // await Link_splunk.find({ link: { $eq: "link" } });
+    //   await Link_splunk.find().sort({ $natural: -1 }).limit(1);
+    // res.status(200).json({
+    //   response: sendlink,
+    // });
+    // console.log(linking);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+    console.log(err.message);
+  }
+};
+
+// showPaidCourses();
+
 module.exports = {
+  showPaidCourses,
   getEducationalUsers,
   getLinkEducation,
   getSplunkUsers,
@@ -285,4 +345,22 @@ module.exports = {
 //     response: courseName[i],
 //   });
 //   console.log(courseName[i]);
+// }
+
+// if (courses_finding_paided) {
+//   const findpaidusers = courses_finding_paided.filter((x) => {
+//     return x.studentName === email;
+//   });
+//   //  courses_finding_paided.map((x)=>{
+//   //   console.log(x.studentName)
+//   //     return x.studentName
+//   // })
+//   res.status(200).json({
+//     response: findpaidusers,
+//     video: "WATCH THE VIDEO YOU HAVE PAID FOR PAID COURSE",
+//   });
+//   console.log(findpaidusers);
+// } else {
+//   console.log("not true!!!!!");
+//   return res.status(200).json({ message: "ERROR coundnt find person " });
 // }

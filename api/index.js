@@ -273,7 +273,8 @@ const createOrder = async (cart) => {
           // value: mainPrice,
           value: 1.0,
           studentName: mainStudentName,
-          courseName: mainCourseName,
+          courseName:"Linux"
+          // courseName: mainCourseName,
           // total,               // come from the frontend
         },
       },
@@ -365,6 +366,7 @@ app.post("/api/orders/:orderID/capture", async (req, res) => {
       try {
         const paymentuser = await Payment.create({
           studentName: jsonResponse.purchase_units[0].amount.studentName,
+          // courseName: jsonResponse.purchase_units[0].amount.courseName,
           courseName: jsonResponse.purchase_units[0].amount.courseName,
           payment_id: orderID,
           payment_mode: payment_mode,

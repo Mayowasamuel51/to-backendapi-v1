@@ -268,36 +268,34 @@ const showPaidCourses = async (req, res, next) => {
   try {
     // req.params.email
     const email = req.params.email;
-    const paidcourses = await Payment.findOne({ email: email });
-    const courses_finding_paided =
-      (await Payment.find({
-        // just check the email paid for the linx course or any other course
-        courseName: { $regex: /Linux/i },
-      })) 
-      // || (await Payment.find({ courseName: { $regex: /splunk/i } }));
-    const findpaidusers = courses_finding_paided.filter((x) => {
-      return x.studentName === email  &&  x.courseName === "Linux"
+    const paidcourses = await Payment.findOne({ studentName: email });
+    if (!paidcourses) {
+      const error = new Error(
+        "sorry this email was not found in the payment table  "
+      );
+      error.statusCode = 404;
+      throw error;
+    }
+    const courses_finding_paided = await Payment.find({
+      // just check the email paid for the linx course or any other course
+      courseName: { $regex: /Linux/i },
     });
-    if (courses_finding_paided) {
-      if (!findpaidusers) {
-        const error = new Error("sorry you didnt subscribe any course ");
-        error.statusCode = 404;
-        throw error;
-      }
-
-      //  courses_finding_paided.map((x)=>{
-      //   console.log(x.studentName)
-      //     return x.studentName
-      // })
+    // || (await Payment.find({ courseName: { $regex: /splunk/i } }));
+    // if (courses_finding_paided) {
+      const findpaidusers = courses_finding_paided.filter((x) => {
+        return x.studentName === email && x.courseName === "Linux";
+      });
       res.status(200).json({
         response: findpaidusers,
         video: "WATCH THE VIDEO YOU HAVE PAID FOR PAID COURSE",
       });
       console.log(findpaidusers);
-    } else {
-      console.log("not true!!!!!");
-      return res.status(200).json({ message: "ERROR coundnt find person " });
-    }
+    // }
+
+    // } else {
+    //   console.log("not true!!!!!");
+    //   return res.status(200).json({ message: "ERROR coundnt find person " });
+    // }
 
     // console.log(paidcourses)
 

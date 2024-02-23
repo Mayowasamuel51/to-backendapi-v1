@@ -27,8 +27,7 @@ const signup = (req, res, next) => {
             name: name,
             email: email,
             provider:"email and password",
-            password: password
-            // hased
+            password: hased
         })
         user.save().then((result) => {
             res.status(201).json({

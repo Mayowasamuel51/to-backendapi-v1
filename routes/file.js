@@ -38,9 +38,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
             uploadedBy: req.user?.id, // from auth middleware if you use it
         });
         let why;
-
         await newFile.save();
-
         res.json({ message: "File uploaded successfully", file: newFile });
     } catch (err) {
         res.status(500).json({ message: err.message });

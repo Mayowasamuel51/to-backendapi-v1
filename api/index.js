@@ -7,6 +7,7 @@ const cors = require("cors");
 const dashboardroutes = require("../routes/dashboard.js");
 const authroutes = require("../routes/auth.js");
 const pagesroutes = require("../routes/pages.js");
+const uploadsroutes = require('../routes/file.js')
 const adminroutes = require("../routes/adminroutes.js");
 const Paypal = require("@paypal/checkout-server-sdk");
 const Middleware = require("../middleware/auth");
@@ -16,13 +17,15 @@ const dotenvb = require("dotenv").config();
 const cookiesMiddleware = require("universal-cookie-express");
 const Payment = require("../model/payment.js");
 var cookieParser = require("cookie-parser");
-// var cookieParser = require('cookie-parser')
-// app.use(cookieParser())
-// require("dotenv").config({ path: __dirname + "/.env" });
+const path = require("path");
 const CronJob = require("cron").CronJob;
+app.use("/uploads", express.static(path.join(__dirname, "..","uploads")));
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+console.log("Serving uploads from:", path.join(__dirname,  "..","uploads"));
+
 mongoose
   .connect(
-    "mongodb+srv://fpasamuelmayowa51:5iX35jgh9yB9P6Im@cluster0.unk3ntp.mongodb.net/datausers"
+   process.env.DATABASE_URL
   )
   .then((res) => console.log("database connected!!!"))
   .catch((err) => console.log(err.message));
@@ -37,75 +40,7 @@ app.all("*", (req, res, next) => {
   next();
 });
 
-// const Environment =
-//   process.env.NODE_ENV === "production"
-//     ? paypal.core.LiveEnvironment
-//     : paypal.core.SandboxEnvironment
-// const paypalClient = new paypal.core.PayPalHttpClient(
-//   new Environment(
-//     process.env.PAYPAL_CLIENT_ID,
-//     process.env.PAYPAL_CLIENT_SECRET
-//   )
-// )
-// const storeItems = new Map([
-//   [1, { price: 100, name: "Learn React Today" }],
-//   [2, { price: 200, name: "Learn CSS Today" }],
-// ])
 
-// app.post("/create-order", async (req, res) => {
-//   const request = new paypal.orders.OrdersCreateRequest()
-//   const total = req.body.items.reduce((sum, item) => {
-//     return sum + storeItems.get(item.id).price * item.quantity
-//   }, 0)
-//   request.prefer("return=representation")
-//   request.requestBody({
-//     intent: "CAPTURE",
-//     purchase_units: [
-//       {
-//         amount: {
-//           currency_code: "USD",
-//           value: total,
-//           breakdown: {
-//             item_total: {
-//               currency_code: "USD",
-//               value: total,
-//             },
-//           },
-//         },
-//         items: req.body.items.map(item => {
-//           const storeItem = storeItems.get(item.id)
-//           return {
-//             name: storeItem.name,
-//             unit_amount: {
-//               currency_code: "USD",
-//               value: storeItem.price,
-//             },
-//             quantity: item.quantity,
-//           }
-//         }),
-//       },
-//     ],
-//   })
-
-//   try {
-//     const order = await paypalClient.execute(request)
-//     res.json({ id: order.result.id })
-//   } catch (e) {
-//     res.status(500).json({ error: e.message })
-//   }
-// })
-
-// const paypal = require("@paypal/checkout-server-sdk")
-// const Environment =
-//   process.env.NODE_ENV === "production"
-//     ? paypal.core.LiveEnvironment
-//     : paypal.core.SandboxEnvironment
-// const paypalClient = new paypal.core.PayPalHttpClient(
-//   new Environment(
-//     process.env.PAYPAL_CLIENT_ID,
-//     process.env.PAYPAL_CLIENT_SECRET
-//   )
-// )
 
 // // connecting the server and frontend
 app.use((req, res, next) => {
@@ -121,7 +56,7 @@ app.use("/api", pagesroutes);
 app.use("/api", dashboardroutes);
 app.use("/api", authroutes);
 app.use("/api", adminroutes);
-
+app.use('/api',uploadsroutes)
 function get_access_token() {
   const auth = `${client_id}:${client_secret}`;
   const data = "grant_type=client_credentials";
@@ -149,72 +84,8 @@ const endpoint_url =
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8888 } = process.env;
 const base = "https://api-m.sandbox.paypal.com";
 
-// app.post('/create_order', (req, res) => {
 
-//     get_access_token()
-//         .then(access_token => {
-//             let order_data_json = {
-//                 intent: req.body.intent.toUpperCase(),
-//                 item:req.body.items,
-//                 purchase_units: [{
-//                     amount: {
-//                         'currency_code': 'USD',
-//                         'value':req.body.items[0].quantity
-//                         //  req.body.items[0].quantity
-//                     }
-//                 }]
-//             };
-//             console.log(req.body.items[0].quantity)
-//             const data = JSON.stringify(order_data_json)
-//             fetch(endpoint_url + '/v2/checkout/orders', {
-//             //https://developer.paypal.com/docs/api/orders/v2/#orders_create
-//                     method: 'POST',
-//                     headers: {
-//                         'Content-Type': 'application/json',
-//                         'Authorization': `Bearer ${access_token}`
-//                     },
-//                     body: data
-//                 })
-//                 .then(res => res.json())
-//                 .then(json => {
-//                     res.send(json);
-//                     console.log(json)
-
-//                 }) //Send minimal data to client
-//         })
-//         .catch(err => {
-//             console.log(err.message);
-//             res.status(500).send(err)
-//         })
-// });
-// app.post('/complete_order', (req, res, next) => {
-//     get_access_token()
-//         .then(access_token => {
-//             fetch(endpoint_url + '/v2/checkout/orders/' + req.body.orderID + '/' + req.body.intent, {
-//                     method: 'POST',
-//                     headers: {
-//                         'Content-Type': 'application/json',
-//                         'Authorization': `Bearer ${access_token}`
-//                     }
-//                 })
-//                 .then(res => res.json())
-//                 .then(json => {
-//                     // will update the database here
-//                     console.log(json);
-//                     console.log("order done well!!!!")
-//                     res.send(json);
-//                 }) //Send minimal data to client
-//         })
-//         .catch(err => {
-//             if (!err) {
-//                 if (!err.statusCode) {
-//                     err.statusCode = 500;
-//                 }
-//                 next(err)
-//                 console.log(err.message)
-//            }
-//         })
-// });
+//           
 
 const generateAccessToken = async () => {
   try {

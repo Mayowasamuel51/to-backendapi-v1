@@ -49,6 +49,7 @@ router.post('/messages', pagesController.sendMessage)
 
 // geting the lastest messages 
 router.get('/assignment',mainassignment.getassignment)
+router.get('/all/assignment',mainassignment.allAssignments)
 /// creating a public by the admin
 router.post('/assignment', mainassignment.Sendassignment)
 

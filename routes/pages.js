@@ -4,6 +4,7 @@ const { body } = require('express-validator')
 const pagesController = require('../controller/pagesController')
 const dashboard = require('../controller/DashboardController.js')
 const NewController = require('../controller/newController.js')
+const mainassignment = require('../controller/Assignmentcontroller.js')
 
 ///routes for the new page  api 
 router.get('/news', NewController.newApi)
@@ -44,6 +45,11 @@ router.get('/messages', pagesController.getMessage)
 router.post('/messages', pagesController.sendMessage)
 
 
+//sending assignment 
 
+// geting the lastest messages 
+router.get('/assignment',mainassignment.getassignment)
+/// creating a public by the admin
+router.post('/assignment', mainassignment.Sendassignment)
 
 module.exports = router;

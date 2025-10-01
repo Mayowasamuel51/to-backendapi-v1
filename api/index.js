@@ -57,6 +57,8 @@ app.use("/api", dashboardroutes);
 app.use("/api", authroutes);
 app.use("/api", adminroutes);
 app.use('/api',uploadsroutes)
+
+
 function get_access_token() {
   const auth = `${client_id}:${client_secret}`;
   const data = "grant_type=client_credentials";

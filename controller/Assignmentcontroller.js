@@ -7,7 +7,7 @@ const Sendassignment = async (req, res, next) => {
     const { assignment } = req.body;
     try {
         const assignment = await Assingment.create({
-            assignment: assignment
+            message: assignment
         })
         res.status(200).json({
             assignment: assignment

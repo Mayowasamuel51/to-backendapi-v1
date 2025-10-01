@@ -46,7 +46,7 @@ const getassignment = async (req, res, next) => {
 const allAssignments = async (req, res, next) => {
   try {
     // get all assignments, sorted by newest first
-    const response = await  Assingment.find().sort({ createdAt: 1 });
+    const response = await  Assingment.find().sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,

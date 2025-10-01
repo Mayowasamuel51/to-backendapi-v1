@@ -28,7 +28,7 @@ const getassignment = async (req, res, next) => {
         // get the lastest message from the database !!!!!!
         const response = await  Assingment.find().sort({ $natural: -1 }).limit(1)
         res.status(200).json({
-            response: response
+            data: response
         })
 
     } catch (err) {

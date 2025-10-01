@@ -12,4 +12,4 @@ const Assingment = new Schema({
 
 })
 
-module.exports = mongoose.model('Assignment', Assingment)
+module.exports = mongoose.model('Assingment', Assingment)

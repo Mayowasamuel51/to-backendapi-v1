@@ -2,28 +2,31 @@ const Assingment = require('../model/assingment.js');
 const User = require("../model/user.js")
 
 
-
 const Sendassignment = async (req, res, next) => {
-    const { assignment } = req.body;
-    try {
-        const assignment = await Assingment.create({
-            message: assignment
-        })
-        res.status(200).json({
-            assignment: assignment
-        })
-    } catch (err) {
-        if (!err.statusCode) {
-            err.statusCode = 500;
-        }
-        next(err)
-        console.log(err.message)
+  const { assignment } = req.body;
+
+  try {
+    const newAssignment = await Assingment.create({
+      message: assignment,
+    });
+
+    res.status(200).json({
+      assignment: newAssignment,
+    });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
     }
-}
+    console.error(err.message);
+    next(err);
+  }
+};
+
+
 const getassignment = async (req, res, next) => {
     try {
         // get the lastest message from the database !!!!!!
-        const response = await assignment.find().sort({ $natural: -1 }).limit(1)
+        const response = await  Assingment.find().sort({ $natural: -1 }).limit(1)
         res.status(200).json({
             response: response
         })

@@ -138,7 +138,7 @@ const sendliveCoursesSplunk = async (req, res, next) => {
     //     return names.studentName;
     //   });
       const createLinks = await Link_splunk.create({
-        email: mainnames,
+        email: email,
         link: link,
       });
       return res.status(201).json({ message: "repsone", data: createLinks });

@@ -129,23 +129,23 @@ const sendliveCoursesSplunk = async (req, res, next) => {
       courseName: { $regex: /splunk/i },
     });
 
-    if (courses) {
-      // insert the links into the link database .
-      // then the paid studnet will access it
-      // store payment names into the array
-      const mainnames = courses.map((names) => {
-        console.log(names.studentName);
-        return names.studentName;
-      });
+    // if (courses) {
+    //   // insert the links into the link database .
+    //   // then the paid studnet will access it
+    //   // store payment names into the array
+    //   const mainnames = courses.map((names) => {
+    //     console.log(names.studentName);
+    //     return names.studentName;
+    //   });
       const createLinks = await Link_splunk.create({
         email: mainnames,
         link: link,
       });
       return res.status(201).json({ message: "repsone", data: createLinks });
       // return res.status(200).json({message:"",})
-    } else {
-      return res.status(200).json({ message: "ERROR" });
-    }
+    // } else {
+    //   return res.status(200).json({ message: "ERROR" });
+    // }
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

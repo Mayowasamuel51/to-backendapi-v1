@@ -112,46 +112,73 @@ const getEducationalUsers = async (req, res, next) => {
 /* A  function  called sendliveCoursesSplunk for sending live google meet to student for meet up ,live courses are Splunk , Educational
 this function will only work for auth users and paid course users (Splunk, and Educational )
 */
+// const sendliveCoursesSplunk = async (req, res, next) => {
+//   // if student has paid for splunk  courses then the admin should see total of student they are sending link to else  the input in the frontend shoulb blur or something
+//   try {
+//     const { email, link } = req.body;
+
+//     /// know who paid for live splunk from payment database
+//     /// send link to who paid for splunk
+//     // finding or searching for letters of splunk in the database;
+
+//     // Fetch out courseNames first with studnet email who paid
+//     // After fetching those that paid then send link to them
+//     // So send to the paid student email
+
+//     const courses = await Payment.find({
+//       courseName: { $regex: /splunk/i },
+//     });
+
+//     if (courses) {
+//       // insert the links into the link database .
+//       // then the paid studnet will access it
+//       // store payment names into the array
+//       // const mainnames = courses.map((names) => {
+//       //   console.log(names.studentName);
+//       //   return names.studentName;
+//       // });
+//       const createLinks = await Link_splunk.create({
+//         email: email,
+//         link: link,
+//       });
+//       return res.status(201).json({ message: "repsone", data: createLinks });
+//       return res.status(200).json({message:"",})
+//     } else {
+//       return res.status(200).json({ message: "ERROR" });
+//     }
+//   } catch (err) {
+//     if (!err.statusCode) {
+//       err.statusCode = 500;
+//     }
+//     next(err);
+//     console.log(err.message);
+//   }
+// };
+
 const sendliveCoursesSplunk = async (req, res, next) => {
-  // if student has paid for splunk  courses then the admin should see total of student they are sending link to else  the input in the frontend shoulb blur or something
   try {
     const { email, link } = req.body;
 
-    /// know who paid for live splunk from payment database
-    /// send link to who paid for splunk
-    // finding or searching for letters of splunk in the database;
-
-    // Fetch out courseNames first with studnet email who paid
-    // After fetching those that paid then send link to them
-    // So send to the paid student email
-
-    const courses = await Payment.find({
-      courseName: { $regex: /splunk/i },
+    // No need to check who paid — just store the link for anyone
+    const createLink = await Link_splunk.create({
+      email,
+      link,
     });
 
-    if (courses) {
-      // insert the links into the link database .
-      // then the paid studnet will access it
-      // store payment names into the array
-      // const mainnames = courses.map((names) => {
-      //   console.log(names.studentName);
-      //   return names.studentName;
-      // });
-      const createLinks = await Link_splunk.create({
-        email: email,
-        link: link,
-      });
-      return res.status(201).json({ message: "repsone", data: createLinks });
-      return res.status(200).json({message:"",})
-    } else {
-      return res.status(200).json({ message: "ERROR" });
-    }
+    // Send success response
+    return res.status(201).json({
+      message: "Link shared successfully with all users",
+      data: createLink,
+    });
+
   } catch (err) {
+    console.error("Error sending Splunk link:", err.message);
+
+    // Pass error to middleware
     if (!err.statusCode) {
       err.statusCode = 500;
     }
     next(err);
-    console.log(err.message);
   }
 };
 

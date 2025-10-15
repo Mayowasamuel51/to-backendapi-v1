@@ -27,7 +27,7 @@ const forgotPassword = async (req, res, next) => {
       { expiresIn: "15m" }
     );
 
-    const resetLink = `http://localhost:5173/reset-password/${resetToken}`;
+    const resetLink = `https://www.to-analytics.com/reset-password/${resetToken}`;
 
     // Set up mail transport
     const transporter = nodemailer.createTransport({

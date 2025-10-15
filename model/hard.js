@@ -8,7 +8,7 @@ const deleteUsers = async () => {
 
     // delete many users by multiple names
     const result = await User.deleteMany({
-      name: { $in: ["Sam","Kirby Fields", "phone@gmail.com"] }
+      name: { $in: ["Mayowa samuel"] }
     });
 
     if (result.deletedCount > 0) {

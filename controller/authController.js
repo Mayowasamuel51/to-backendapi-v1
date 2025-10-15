@@ -3,6 +3,88 @@ const User = require('../model/user.js');
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const admin = require('../firebase');
+const nodemailer = require("nodemailer");
+const dotenvb = require("dotenv").config();
+
+
+
+//  FORGOT PASSWORD
+const forgotPassword = async (req, res, next) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      const error = new Error("No account found with that email.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    // Create a short-lived reset token (15 mins)
+    const resetToken = jwt.sign(
+      { email: user.email, userId: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+
+    const resetLink = `http://localhost:5173/reset-password/${resetToken}`;
+
+    // Set up mail transport
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: `"TO Analytics" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Password Reset Request",
+      text: `Click the link below to reset your password:\n\n${resetLink}\n\nThis link will expire in 15 minutes.`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ message: "Password reset link sent to your email." });
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
+    console.log(err.message);
+  }
+};
+
+// RESET PASSWORD
+const resetPassword = async (req, res, next) => {
+  const { token } = req.params;
+  const { password } = req.body;
+
+  try {
+    // Verify JWT
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findOne({ _id: decoded.userId, email: decoded.email });
+
+    if (!user) {
+      const error = new Error("Invalid token or user not found.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    // Hash new password
+    const hashed = await bcrypt.hash(password, 12);
+    user.password = hashed;
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successful. You can now log in." });
+  } catch (err) {
+    if (err.name === "TokenExpiredError") {
+      err.message = "Reset link has expired. Please request a new one.";
+    }
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
+  }
+};
 
 const signup = (req, res, next) => {
     const error = validationResult(req);
@@ -177,6 +259,8 @@ const googleAuth = async (req, res, next) => {
 module.exports = {
     googleAuth,
     signup,
+    forgotPassword,
+    resetPassword,
     login,
     userInfo
 }

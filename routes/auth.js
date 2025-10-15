@@ -7,6 +7,10 @@ const Middleware = require('../middleware/is-auth')
 
 // google token from firebase, and we jwt token from our own server 
 //procted
+router.post('/forgot-password', authController.forgotPassword)
+router.post('/reset-password/:token', authController.resetPassword)
+
+
 router.get('/users',
     // Middleware.mixMiddleware,
     // (req, res) => {

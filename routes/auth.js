@@ -5,6 +5,28 @@ const {body} = require('express-validator')
 const User = require('../model/user')
 const Middleware = require('../middleware/is-auth')
 const QuizResult = require('../model/quiz.js')
+const Quiz = require("../model/quiz.js");
+
+// Get all quizzes for dropdown
+router.get("/quiz/list", async (req, res) => {
+  try {
+    const quizzes = await Quiz.Quiz.find({}, "title description");
+    res.json(quizzes);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Get specific quiz by ID
+router.get("/quiz/:id", async (req, res) => {
+  try {
+    const quiz = await Quiz.Quiz.findById(req.params.id);
+    if (!quiz) return res.status(404).json({ message: "Quiz not found" });
+    res.json(quiz);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 
 // Save quiz score
@@ -23,7 +45,7 @@ const QuizResult = require('../model/quiz.js')
 //   }
 // });
 // Save quiz score
-router.post("/save", async (req, res) => {
+// router.post("/save", async (req, res) => {
 //   try {
 //     const { username, testName, score, totalQuestions } = req.body;
 
@@ -35,52 +57,24 @@ router.post("/save", async (req, res) => {
 //       testName,
 //       score,
 //       totalQuestions,
+//       dateTaken: new Date(),
 //     });
 
-//     // ✅ Send full saved record with proper date
-//     res.status(201).json({
-//       message: "Score saved successfully",
-//       result,
-//     });
+//     res.status(201).json({ message: "Score saved successfully", result });
 //   } catch (err) {
 //     res.status(500).json({ message: "Server error", error: err.message });
 //   }
-  try {
-    const { username, testName, score, totalQuestions } = req.body;
-
-    if (!username || !testName || score === undefined || !totalQuestions)
-      return res.status(400).json({ message: "Missing fields" });
-
-    const result = await QuizResult.create({
-      username,
-      testName,
-      score,
-      totalQuestions,
-      dateTaken: new Date(),
-    });
-
-    res.status(201).json({ message: "Score saved successfully", result });
-  } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
-  }
-});
+// });
 
 
-router.get("/quiz/my-scores/:username", async (req, res) => {
+// router.get("/quiz/my-scores/:username", async (req, res) => {
 //   try {
-//     const { username } = req.params;
-//     const results = await QuizResult.find({ username }).sort({ dateTaken: -1 });
+//     const results = await QuizResult.find({ username: req.params.username }).sort({ dateTaken: -1 });
 //     res.json(results);
 //   } catch (err) {
 //     res.status(500).json({ message: "Server error", error: err.message });
 //   }
-  try {
-    const results = await QuizResult.find({ username: req.params.username }).sort({ dateTaken: -1 });
-    res.json(results);
-  } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
-  }
-});
+// });
 
 // router.get("/quiz/my-scores/:username", async (req, res) => {
 //   try {

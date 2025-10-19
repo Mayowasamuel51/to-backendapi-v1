@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controller/authController')
-const {body} = require('express-validator')
+const { body } = require('express-validator')
 const User = require('../model/user')
 const Middleware = require('../middleware/is-auth')
 const QuizResult = require('../model/quiz.js')
@@ -17,10 +17,10 @@ router.get("/quiz/list", async (req, res) => {
   }
 });
 
-// Get specific quiz by ID
-router.get("/quiz/:id", async (req, res) => {
+
+router.get("/quiz/:name", async (req, res) => {
   try {
-    const quiz = await Quiz.Quiz.findById(req.params.id);
+    const quiz = await Quiz.Quiz.findOne({ title: req.params.name });
     if (!quiz) return res.status(404).json({ message: "Quiz not found" });
     res.json(quiz);
   } catch (err) {
@@ -28,8 +28,154 @@ router.get("/quiz/:id", async (req, res) => {
   }
 });
 
+router.post("/quiz/save", async (req, res) => {
+  try {
+    const { username, testName, score, totalQuestions, missedQuestions } = req.body;
 
-// Save quiz score
+    // Validate required fields
+    if (!username || !testName || score === undefined || !totalQuestions) {
+      return res.status(400).json({ message: "Missing fields" });
+    }
+
+    const result = new QuizResult.QuizResult({
+      username,
+      testName,
+      score,
+      totalQuestions,
+      missedQuestions: missedQuestions || [],
+    });
+
+    await result.save();
+    res.status(201).json(result);
+  } catch (err) {
+    console.error("Error saving quiz result:", err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// router.post("/quiz/save", async (req, res) => {
+//   try {
+//     const { username, testName, score, quizQuestions, userAnswers } = req.body;
+
+//     // Validate required fields
+//     if (!username || !testName || !score || !quizQuestions || !userAnswers) {
+//       return res.status(400).json({ message: "❌ Missing required fields" });
+//     }
+
+//     // Compute missed questions
+//     const missed = quizQuestions
+//       .map((q, i) => {
+//         const correctAnswers = Array.isArray(q.correct)
+//           ? q.correct
+//           : [q.correct];
+//         const userAnswer = userAnswers[i];
+
+//         if (!correctAnswers.includes(userAnswer)) {
+//           return {
+//             question: q.question,
+//             selected: userAnswer,
+//             correct: correctAnswers.join(", "),
+//           };
+//         }
+//         return null;
+//       })
+//       .filter(Boolean);
+
+//     // Save result
+//     const result = new QuizResult.QuizResult({
+//       username,
+//       testName,
+//       score,
+//       totalQuestions: quizQuestions.length,
+//       missedQuestions: missed,
+//     });
+
+//     await result.save();
+
+//     return res.status(201).json({
+//       message: "✅ Quiz result saved successfully",
+//       result,
+//     });
+//   } catch (err) {
+//     console.error("❌ Error saving quiz result:", err);
+//     res.status(500).json({
+//       message: "Server error while saving quiz result",
+//       error: err.message,
+//     });
+//   }
+// });
+
+router.get("/quiz/my-scores/:username", async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    if (!username)
+      return res.status(400).json([]);
+
+    const results = await QuizResult.QuizResult.find({ username }).sort({ dateTaken: -1 });
+
+    // Always return an array
+    res.status(200).json(results || []);
+  } catch (err) {
+    console.error("Error fetching quiz scores:", err);
+    res.status(500).json([]);
+  }
+});
+
+
+// router.get("/quiz/my-scores/:username", async (req, res) => {
+//   try {
+//     const { username } = req.params;
+
+//     // Check if username was provided
+//     if (!username) {
+//       return res.status(400).json({ message: "Username is required" });
+//     }
+
+//     // Fetch user's quiz results, sorted by most recent
+//     const results = await QuizResult.find({ username }).sort({ dateTaken: -1 });
+
+//     // Handle empty results
+//     if (!results || results.length === 0) {
+//       return res.status(404).json({ message: "No test scores found" });
+//     }
+
+//     // Respond with the user's results
+//     res.status(200).json(results);
+
+//   } catch (err) {
+//     console.error("Error fetching quiz scores:", err);
+//     res.status(500).json({ message: "Server error", error: err.message });
+//   }
+// });
+
+// router.get("/quiz/my-scores/:username", async (req, res) => {
+//   try {
+//     const results = await QuizResult.QuizResult.find({ username: req.params.username }).sort({ dateTaken: -1 });
+//     res.json(results);
+//   } catch (err) {
+//     res.status(500).json({ message: "Server error", error: err.message });
+//   }
+// });
+
+// router.get("/quiz/my-scores/:username", async (req, res) => {
+//   try {
+//     const { username } = req.params;
+
+//     if (!username)
+//       return res.status(400).json({ message: "Username is required" });
+
+//     const results = await QuizResult.find({ username }).sort({ dateTaken: -1 });
+
+//     if (results.length === 0)
+//       return res.status(404).json({ message: "No test scores found" });
+
+//     res.status(200).json(results);
+//   } catch (err) {
+//     res.status(500).json({ message: "Server error", error: err.message });
+//   }
+// });
+// // // Save quiz score
 // router.post("/save", async (req, res) => {
 //   try {
 //     const { username, testName, score } = req.body;
@@ -100,40 +246,40 @@ router.post('/reset-password/:token', authController.resetPassword)
 
 
 router.get('/users',
-    // Middleware.mixMiddleware,
-    // (req, res) => {
-    // res.status(200).json("sdafafafafafaf")
-    authController.userInfo)
-    
+  // Middleware.mixMiddleware,
+  // (req, res) => {
+  // res.status(200).json("sdafafafafafaf")
+  authController.userInfo)
+
 router.post('/sighup', [
-    body('email').isEmail().withMessage('please enter a vilad email').custom((value, { req }) => {
-        return User.findOne({ email: req.email}).then(userDoc => {
-            if (userDoc) {
-                return Promise.reject('Email already taken')
-            }
-        })
-    }).normalizeEmail(),
-    
-    body('password').trim(),
-    body('name').notEmpty().withMessage('please enter a vilad email').custom((value, { req }) => {
-        return User.findOne({ name: value }).then(userDoc => {
-            if (userDoc) {
-                return Promise.reject('name already taken')
-            }
-        })
+  body('email').isEmail().withMessage('please enter a vilad email').custom((value, { req }) => {
+    return User.findOne({ email: req.email }).then(userDoc => {
+      if (userDoc) {
+        return Promise.reject('Email already taken')
+      }
     })
+  }).normalizeEmail(),
+
+  body('password').trim(),
+  body('name').notEmpty().withMessage('please enter a vilad email').custom((value, { req }) => {
+    return User.findOne({ name: value }).then(userDoc => {
+      if (userDoc) {
+        return Promise.reject('name already taken')
+      }
+    })
+  })
 ], authController.signup);
 
 router.post('/login', authController.login)
 
 router.post('/google', [
-    body('email').isEmail().withMessage('please enter a vilad email').custom((value, { req }) => {
-    return User.findOne({ email: req.email}).then(userDoc => {
-        if (userDoc) {
-            return Promise.reject('Email already taken')
-        }
+  body('email').isEmail().withMessage('please enter a vilad email').custom((value, { req }) => {
+    return User.findOne({ email: req.email }).then(userDoc => {
+      if (userDoc) {
+        return Promise.reject('Email already taken')
+      }
     })
-}).normalizeEmail(),
+  }).normalizeEmail(),
 ], authController.googleAuth)
 
 

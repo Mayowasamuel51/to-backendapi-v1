@@ -16,6 +16,17 @@ const quizSchema = new Schema({
 });
 
 // ✅ QuizResult schema (stores scores)
+// const quizResultSchema = new Schema(
+//   {
+//     username: { type: String, required: true },
+//     testName: { type: String, required: true },
+//     score: { type: Number, required: true },
+//     totalQuestions: { type: Number, required: true },
+//     dateTaken: { type: Date, default: Date.now },
+//   },
+//   { timestamps: true }
+// );
+
 const quizResultSchema = new Schema(
   {
     username: { type: String, required: true },
@@ -23,6 +34,13 @@ const quizResultSchema = new Schema(
     score: { type: Number, required: true },
     totalQuestions: { type: Number, required: true },
     dateTaken: { type: Date, default: Date.now },
+    missedQuestions: [
+      {
+        question: String,
+        selected: String,
+        correct: String,
+      },
+    ],
   },
   { timestamps: true }
 );
@@ -32,6 +50,18 @@ const Quiz = mongoose.model('Quiz', quizSchema);
 const QuizResult = mongoose.model('QuizResult', quizResultSchema);
 
 module.exports = { Quiz, QuizResult };
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // const mongoose = require('mongoose');

@@ -4,7 +4,7 @@ const Quiz = require("../model/quiz.js");
 const MONGO_URI = "mongodb+srv://fpasamuelmayowa51:5iX35jgh9yB9P6Im@cluster0.unk3ntp.mongodb.net/datausers"; // change to your DB URI
 
 const splunk2Quiz = {
-  title: "Splunk 2 Quiz",
+  title: "T.O Analytics Splunk  Quiz 2",
   description: "Advanced Splunk SIEM and operational knowledge test",
   questions: [
     {

@@ -283,4 +283,60 @@ router.post('/google', [
 ], authController.googleAuth)
 
 
+
+
+router.post("/create-checkout-session", async (req, res) => {
+  const { cartItems, email } = req.body;
+
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      customer_email: email,
+      line_items: cartItems.map(item => ({
+        price_data: {
+          currency: "usd",
+          product_data: { name: item.name },
+          unit_amount: item.price * 100, // Convert $ to cents
+        },
+        quantity: item.quantity,
+      })),
+      success_url: "http://localhost:5173/success?session_id={CHECKOUT_SESSION_ID}",
+      cancel_url: "http://localhost:5173/cancel",
+    });
+
+    res.json({ url: session.url });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to create checkout session" });
+  }
+});
+
+// ✅ Verify payment (after redirect)
+router.get("/verify-payment", async (req, res) => {
+  const { session_id } = req.query;
+
+  try {
+    const session = await stripe.checkout.sessions.retrieve(session_id);
+
+    // Save payment to DB only if successful
+    if (session.payment_status === "paid") {
+      const newPayment = new Payment({
+        userEmail: session.customer_email,
+        amount: session.amount_total / 100,
+        currency: session.currency,
+        paymentStatus: session.payment_status,
+        paymentId: session.id,
+      });
+      await newPayment.save();
+    }
+
+    res.json({ success: true, session });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Payment verification failed" });
+  }
+});
+
+
 module.exports = router

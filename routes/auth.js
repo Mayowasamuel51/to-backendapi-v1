@@ -16,6 +16,14 @@ router.get("/quiz/list", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+app.get("/quiz/all-results", async (req, res) => {
+  try {
+    const results = await Quiz.QuizResult.find().sort({ dateTaken: -1 });
+    res.json(results);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching results", error: err });
+  }
+});
 
 router.get("/all-scores", async (req, res) => {
   try {

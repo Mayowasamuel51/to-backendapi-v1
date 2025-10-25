@@ -16,7 +16,7 @@ router.get("/quiz/list", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-app.get("/quiz/all-results", async (req, res) => {
+router.get("/quiz/all-results", async (req, res) => {
   try {
     const results = await Quiz.QuizResult.find().sort({ dateTaken: -1 });
     res.json(results);

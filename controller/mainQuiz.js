@@ -4,7 +4,7 @@ const Quiz = require("../model/quiz.js");
 const MONGO_URI = "mongodb+srv://fpasamuelmayowa51:5iX35jgh9yB9P6Im@cluster0.unk3ntp.mongodb.net/datausers"; // change to your DB URI
 
 const splunk2Quiz = {
-  title: "T.O Analytics Splunk  Quiz 2",
+  title: "T.O Analytics Splunk Quiz 2",
   description: "Advanced Splunk SIEM and operational knowledge test",
   questions: [
     {
@@ -219,10 +219,10 @@ async function seed() {
     await mongoose.connect(MONGO_URI);
     console.log("Connected to DB ✅");
 
-    await Quiz.Quiz.deleteMany({ title: "Splunk 2 Quiz" });
+    await Quiz.Quiz.deleteMany({ title: "T.O Analytics Splunk Quiz 2" });
     await Quiz.Quiz.create(splunk2Quiz);
 
-    console.log("Splunk 2 Quiz loaded successfully 🚀");
+    console.log("T.O Analytics Splunk Quiz 2 🚀");
     process.exit(0);
   } catch (err) {
     console.error(err);

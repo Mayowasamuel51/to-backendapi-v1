@@ -17,6 +17,15 @@ router.get("/quiz/list", async (req, res) => {
   }
 });
 
+router.get("/all-scores", async (req, res) => {
+  try {
+    const results = await Quiz.QuizResult.find().sort({ createdAt: -1 });
+    res.json(results);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch all results" });
+  }
+});
 
 router.get("/quiz/:name", async (req, res) => {
   try {

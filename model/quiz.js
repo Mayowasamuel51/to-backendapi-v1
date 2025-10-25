@@ -15,18 +15,6 @@ const quizSchema = new Schema({
   questions: [questionSchema], // <-- this is key
 });
 
-// ✅ QuizResult schema (stores scores)
-// const quizResultSchema = new Schema(
-//   {
-//     username: { type: String, required: true },
-//     testName: { type: String, required: true },
-//     score: { type: Number, required: true },
-//     totalQuestions: { type: Number, required: true },
-//     dateTaken: { type: Date, default: Date.now },
-//   },
-//   { timestamps: true }
-// );
-
 const quizResultSchema = new Schema(
   {
     username: { type: String, required: true },

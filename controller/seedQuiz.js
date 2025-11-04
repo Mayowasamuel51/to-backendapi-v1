@@ -4,7 +4,7 @@ const Quiz = require("../model/quiz.js");
 const MONGO_URI = "mongodb+srv://fpasamuelmayowa51:5iX35jgh9yB9P6Im@cluster0.unk3ntp.mongodb.net/datausers";
 
 const splunkDay1Quiz = {
-  title: "T.O Analytics Splunk Quiz 1",
+  title: "T.O Analytics Splunk Class 1 Quiz",
   description: "Covers Splunk SIEM concepts from Day 1 presentation",
   questions: [
     {
@@ -215,10 +215,10 @@ async function seed() {
     await mongoose.connect(MONGO_URI);
     console.log("Connected to DB ✅");
 
-    await Quiz.Quiz.deleteMany({ title: "T.O Analytics Splunk Quiz 2" });
+    await Quiz.Quiz.deleteMany({ title: "T.O Analytics Splunk Class 1 Quiz" });
     await Quiz.Quiz.create(splunkDay1Quiz);
 
-    console.log("Splunk Day 1 Quiz loaded successfully 🚀");
+    console.log("T.O Analytics Splunk Class 1 Quiz🚀");
     process.exit(0);
   } catch (err) {
     console.error(err);

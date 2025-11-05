@@ -1,4 +1,5 @@
 const express = require('express');
+const UserProgress = require('../model/userprogress.js')
 const router = express.Router();
 const authController = require('../controller/authController')
 const { body } = require('express-validator')
@@ -138,7 +139,6 @@ router.get("/quiz/my-scores/:username", async (req, res) => {
     res.status(500).json([]);
   }
 });
-
 
 // router.get("/quiz/my-scores/:username", async (req, res) => {
 //   try {
@@ -300,8 +300,6 @@ router.post('/google', [
 ], authController.googleAuth)
 
 
-
-
 router.post("/create-checkout-session", async (req, res) => {
   const { cartItems, email } = req.body;
 
@@ -355,5 +353,33 @@ router.get("/verify-payment", async (req, res) => {
   }
 });
 
+
+
+
+// Get user's progress for all classes
+router.get("/:email", async (req, res) => {
+  try {
+    const progress = await UserProgress.find({ email: req.params.email });
+    res.json(progress);
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Save/update a note or progress
+router.post("/save", async (req, res) => {
+  try {
+    const { email, courseId, classId, note, time, duration, completed } = req.body;
+    const update = { note, time, duration, completed };
+    const progress = await UserProgress.findOneAndUpdate(
+      { email, courseId, classId },
+      { $set: update },
+      { new: true, upsert: true }
+    );
+    res.json(progress);
+  } catch (err) {
+    res.status(500).json({ error: "Could not save progress" });
+  }
+});
 
 module.exports = router

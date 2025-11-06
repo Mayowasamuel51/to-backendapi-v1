@@ -1,8 +1,25 @@
+// const app = require("./api/index");
+// const cors = require("cors");
+
+// // ✅ Use CORS properly
+// app.use(cors({
+//   origin: ["http://localhost:5173", "https://www.to-analytics.com"], // allowed origins
+//   methods: ["GET", "POST", "PATCH", "DELETE"],
+//   allowedHeaders: ["Content-Type", "Authorization"],
+//   credentials: true,
+// }));
+
+// // Optional: You can keep this for safety
+// app.use((req, res, next) => {
+//   res.setHeader("Content-Type", "application/json");
+//   next();
+// });
+
+// module.exports = app;
+
+
 const app = require('./api/index')
 const cors = require("cors");
-// const path = require("path");
-// app.options("*", cors({ origin: 'http://localhost:8000', optionsSuccessStatus: 200 }));
-// app.use(cors({ origin: "http://localhost:8000", optionsSuccessStatus: 200 }))
 app.use(cors())
 // // connecting the server and frontend
 app.all('*', (req, res, next) => {
@@ -12,7 +29,7 @@ app.all('*', (req, res, next) => {
 
 app.use((req, res, next) => {
     res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Content-Allow-Orgin', 'https://www.to-analytics.com')
+    res.setHeader('Access-Content-Allow-Orgin', 'https://www.to-analytics.com' , "http://localhost:5173")
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH,DELTE')
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
     next()

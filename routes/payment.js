@@ -12,8 +12,8 @@ const User = require("../model/user");
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Enable CORS and JSON body parsing for this router
-router.use(cors());
-router.use(express.json());
+// router.use(cors());
+// router.use(express.json());
 
 // Create Checkout Session route
 router.post("/create-checkout-session", async (req, res) => {
@@ -29,8 +29,8 @@ router.post("/create-checkout-session", async (req, res) => {
         },
         quantity: item.quantity,
       })),
-      success_url: "http://localhost:5173/success",
-      cancel_url: "http://localhost:5173/cancel",
+      success_url: "https://www.to-analytics.com/success",
+      cancel_url: "https://www.to-analytics.com/cancel",
     });
 
     res.json({ url: session.url });

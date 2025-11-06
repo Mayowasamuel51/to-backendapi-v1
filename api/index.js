@@ -16,6 +16,8 @@ const paypal = require("@paypal/checkout-server-sdk");
 const dotenvb = require("dotenv").config();
 const cookiesMiddleware = require("universal-cookie-express");
 const Payment = require("../model/payment.js");
+const Stripe = require("stripe");
+const paymentstripe = require('../routes/payment.js')
 var cookieParser = require("cookie-parser");
 const path = require("path");
 const CronJob = require("cron").CronJob;
@@ -55,8 +57,11 @@ app.use((req, res, next) => {
 app.use("/api", pagesroutes);
 app.use("/api", dashboardroutes);
 app.use("/api", authroutes);
+app.use("/api/payment", paymentstripe)
 app.use("/api", adminroutes);
 app.use('/api',uploadsroutes)
+
+
 
 
 function get_access_token() {

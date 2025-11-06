@@ -1,27 +1,25 @@
 const mongoose = require('mongoose');
-const Assignment = require('./assingment'); // ✅ make sure the filename matches correctly
+const Assignment = require('./assingment'); // ✅ make sure file name matches exactly
 
 const MONGO_URI =
   'mongodb+srv://fpasamuelmayowa51:5iX35jgh9yB9P6Im@cluster0.unk3ntp.mongodb.net/datausers';
 
-async function deleteSplunkAssignment() {
+async function deleteByDate() {
   try {
     await mongoose.connect(MONGO_URI);
     console.log('✅ Connected to MongoDB');
 
-    const deleted = await Assignment.findOneAndDelete({
-      message: {
-        $regex:
-          'Splunk Practice Assignment — Using Internal Logs Objective: Learn to search, filter, and summarize data from Splunk’s own internal index',
-        $options: 'i',
-      },
+    // 🗓️ Example: delete all assignments created before November 6, 2025
+    const targetDate = new Date('2025-11-06'); // adjust to your exact date
+
+    const deleted = await Assignment.deleteMany({
+      date: { $lte: targetDate },
     });
 
-    if (deleted) {
-      console.log('🗑️ Deleted assignment successfully:');
-      console.log('➡️', deleted.message.substring(0, 200) + '...');
+    if (deleted.deletedCount > 0) {
+      console.log(`🗑️ Deleted ${deleted.deletedCount} assignment(s) successfully.`);
     } else {
-      console.log('⚠️ No assignment found matching that description.');
+      console.log('⚠️ No assignments found matching that date.');
     }
 
     await mongoose.disconnect();
@@ -31,7 +29,40 @@ async function deleteSplunkAssignment() {
   }
 }
 
-deleteSplunkAssignment();
+deleteByDate();
+
+// const mongoose = require('mongoose');
+// const Assignment = require('./assingment'); // ✅ check that the filename is EXACTLY 'assignment.js'
+
+// const MONGO_URI =
+//   'mongodb+srv://fpasamuelmayowa51:5iX35jgh9yB9P6Im@cluster0.unk3ntp.mongodb.net/datausers';
+
+// async function deleteSplunkAssignment() {
+//   try {
+//     await mongoose.connect(MONGO_URI);
+//     console.log('✅ Connected to MongoDB');
+
+//     // Delete by title (most reliable)
+//     const deleted = await Assignment.findOneAndDelete({
+//       title: { $regex: 'T.O Analytics – Splunk Class 3 Practical Assignment', $options: 'i' },
+//     });
+
+//     if (deleted) {
+//       console.log('🗑️ Deleted assignment successfully:');
+//       console.log('➡️', deleted.title);
+//     } else {
+//       console.log('⚠️ No assignment found matching that title.');
+//     }
+
+//     await mongoose.disconnect();
+//     console.log('🔌 Disconnected from MongoDB');
+//   } catch (err) {
+//     console.error('❌ Error deleting assignment:', err.message);
+//   }
+// }
+
+// deleteSplunkAssignment();
+
 
 
 // const deleteUsers = async () => {

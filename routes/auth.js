@@ -7,6 +7,9 @@ const User = require('../model/user')
 const Middleware = require('../middleware/is-auth')
 const QuizResult = require('../model/quiz.js')
 const Quiz = require("../model/quiz.js");
+router.get("/health", (req, res) => {
+  res.json({ message: "Hello" });
+});
 
 // Get all quizzes for dropdown
 router.get("/quiz/list", async (req, res) => {

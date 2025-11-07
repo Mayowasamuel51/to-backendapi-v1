@@ -1,21 +1,17 @@
 const mongoose = require('mongoose');
 const Assignment = require('./assingment'); // ✅ make sure file name matches exactly
 
-const MONGO_URI =
-  'mongodb+srv://fpasamuelmayowa51:5iX35jgh9yB9P6Im@cluster0.unk3ntp.mongodb.net/datausers';
+const MONGO_URI = 'mongodb+srv://fpasamuelmayowa51:5iX35jgh9yB9P6Im@cluster0.unk3ntp.mongodb.net/datausers';
 
 async function deleteByDate() {
   try {
     await mongoose.connect(MONGO_URI);
     console.log('✅ Connected to MongoDB');
-
     // 🗓️ Example: delete all assignments created before November 6, 2025
     const targetDate = new Date('2025-11-06'); // adjust to your exact date
-
     const deleted = await Assignment.deleteMany({
       date: { $lte: targetDate },
     });
-
     if (deleted.deletedCount > 0) {
       console.log(`🗑️ Deleted ${deleted.deletedCount} assignment(s) successfully.`);
     } else {

@@ -45,14 +45,23 @@ app.all("*", (req, res, next) => {
 
 
 // // connecting the server and frontend
+// app.use((req, res, next) => {
+//   res.cookie("myCookie", "value", { sameSite: "Strict" });
+//   res.setHeader("Content-Type", "application/json");
+//   res.setHeader("Access-Content-Allow-Orgin", "*");
+//   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH,DELTE");
+//   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//   next();
+// });
+
 app.use((req, res, next) => {
-  res.cookie("myCookie", "value", { sameSite: "Strict" });
-  res.setHeader("Content-Type", "application/json");
-  res.setHeader("Access-Content-Allow-Orgin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH,DELTE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  next();
-});
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', 'https://www.to-analytics.com');
+    // res.setHeader('Access-Content-Allow-Orgin', 'https://www.to-analytics.com')
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH,DELTE')
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+    next()
+})
 
 app.use("/api", pagesroutes);
 app.use("/api", dashboardroutes);

@@ -55,17 +55,24 @@ app.all("*", (req, res, next) => {
 // });
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://www.to-analytics.com');
+  res.setHeader(
+    'Access-Control-Allow-Origin',
+    // 'http://localhost:5173'
+     'https://www.to-analytics.com'
+  );
+
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  
-  // Handle preflight requests
+
+  // Handle preflight requests (CORS preflight)
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
   }
-  
+
+  // ✅ This line is essential
   next();
 });
+
 
 app.use("/api", pagesroutes);
 app.use("/api", dashboardroutes);
